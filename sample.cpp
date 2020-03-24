@@ -14,6 +14,9 @@ using ll = long long;
 using ld = long double;
 #define int ll
 
+constexpr ll INFL = 1'000'000'000'000'000'228;
+constexpr int INFI = 1'000'000'228;
+
 void run() {
 
 }
