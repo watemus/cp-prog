@@ -3,4 +3,5 @@ project(cp_prog)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(cp_prog sample.cpp)
+add_executable(cp_prog ./simple_contest/sample.cpp)
+add_compile_definitions(LOCAL)

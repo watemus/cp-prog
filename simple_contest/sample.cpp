@@ -12,7 +12,9 @@ using ld = long double;
 #define int ll
 
 void run() {
-
+    int a, b;
+    cin >> a >> b;
+    cout << a + b << '\n';
 }
 
 signed main() {
