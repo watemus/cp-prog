@@ -3,5 +3,5 @@ project(cp_prog)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(cp_prog ./educ84/D.cpp)
+add_executable(cp_prog educ84/F.cpp)
 add_compile_definitions(LOCAL)
