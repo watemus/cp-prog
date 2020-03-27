@@ -26,7 +26,7 @@ constexpr int MAXK = 32;
 
 int trie[2][MAXN * MAXK];
 int cnt[MAXN * MAXK];
-int vs[MAXN * MAXK];
+set<int> vs[MAXN * MAXK];
 int size_trie = 2;
 
 int root = 1;
@@ -44,6 +44,8 @@ void add_num(ll a, int v) {
     }
     vs[cur] = v;
 }
+
+void rem_num(ll a)
 
 vector<int> g[MAXN];
 
@@ -73,6 +75,7 @@ void run() {
                 dfs(v, v, c, usd);
                 if (c.size() == n) break;
             }
+
         }
     }
     cout << ans << '\n';
