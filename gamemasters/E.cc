@@ -29,14 +29,14 @@ bool ask(int lb, int rb) {
 }
 
 void run() {
-    mt19937 rnd;
+    mt19937 rnd(time(nullptr));
     int n, k;
     int q;
-    cin >> n >> k >> q;
+    cin >> n >> k;
     int lb = 1;
     int rb = n;
     while (true) {
-        if (rb - lb + 1 > 9 * k + 10) {
+        if (rb - lb + 1 > 4 * k + 3) {
             int mid = (rb + lb) / 2;
             if (ask(lb, mid)) {
                 lb = max(1LL, lb - k);
