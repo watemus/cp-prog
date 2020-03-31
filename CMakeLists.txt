@@ -3,5 +3,5 @@ project(cp_prog)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(cp_prog gamemasters/H.cc)
+add_executable(cp_prog cf630/A.cc)
 add_compile_definitions(LOCAL)
