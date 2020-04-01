@@ -22,7 +22,13 @@ constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
 
 void run() {
-
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    for (int i = 00; i < n; i++) {
+        cin >> a[i];
+    }
+    set<int> was;
 }
 
 signed main() {
@@ -33,7 +39,7 @@ signed main() {
     cin.tie(nullptr);
 #endif
     int t = 1;
-//    cin >> t;
+    cin >> t;
     while (t--) {
         run();
     }
