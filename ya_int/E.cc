@@ -1,3 +1,7 @@
+//
+// Created by watemus on 07.04.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -21,9 +25,13 @@ constexpr int INFI = 1'000'000'228;
 #else
 #endif
 
+const int MAXN = 2e5;
+
+vector<int> g[MAXN];
 
 void run() {
-
+    int n, m;
+    cin >> n >> m;
 }
 
 signed main() {
