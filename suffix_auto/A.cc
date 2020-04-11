@@ -10,14 +10,14 @@ using namespace std;
 #define ff first
 #define ss second
 
-using ll = long long;
+using ll = __int128_t;
 using ld = long double;
 //#define int ll
 
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
 const int AL = 12;
-const int MIN_EL = 0;
+const int MIN_EL = 1;
 
 const int sa_trash = 0;
 const int sa_root = 1;
@@ -36,7 +36,6 @@ struct Suffix_automaton {
     int size = 2;
     int end = sa_root;
     bool term[SA_SIZE];
-    int qq[SA_SIZE];
     int prev[SA_SIZE];
     int ans_v = sa_root;
     int prev_ch[SA_SIZE];
@@ -65,6 +64,7 @@ struct Suffix_automaton {
                 int nw = cpy_node(q, ch);
                 len[nw] = len[p] + 1;
                 link[q] = link[cur] = nw;
+                prev[nw] = p;
                 while (p != sa_trash && to[ch - MIN_EL][p] == q) {
                     to[ch - MIN_EL][p] = nw;
                     p = link[p];
@@ -129,7 +129,7 @@ struct Suffix_automaton {
         return dp[v];
     }
     void print_refren() {
-        cout << ans << '\n';
+        cout << static_cast<long long>(ans) << '\n';
         vector<int> ans;
         int cur = ans_v;
         while (cur != sa_root) {
