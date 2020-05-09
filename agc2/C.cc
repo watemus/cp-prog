@@ -1,3 +1,7 @@
+//
+// Created by watemus on 07.05.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -23,7 +27,24 @@ constexpr int INFI = 1'000'000'228;
 
 
 void run() {
-
+    int n, L;
+    cin >> n >> L;
+    vector<int> a(n);
+    for (int i = 0; i < n; i++) cin >> a[i];
+    for (int i = 0; i < n - 1; i++) {
+        if (a[i] + a[i + 1] >= L) {
+            cout << "Possible\n";
+            for (int j = 0; j < i; j++) {
+                cout << j + 1 << '\n';
+            }
+            for (int j = n - 2; j > i; j--) {
+                cout << j + 1 << '\n';
+            }
+            cout << i + 1 << '\n';
+            return;
+        }
+    }
+    cout << "Impossible\n";
 }
 
 signed main() {

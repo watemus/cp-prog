@@ -1,3 +1,7 @@
+//
+// Created by watemus on 01.05.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -23,7 +27,13 @@ constexpr int INFI = 1'000'000'228;
 
 
 void run() {
-
+    int n;
+    cin >> n;
+    int ans = 0;
+    for (int i = 0; i < n / 2; i++) {
+        ans += (1LL << (i + 1));
+    }
+    cout << ans << '\n';
 }
 
 signed main() {
@@ -34,7 +44,7 @@ signed main() {
     std::cin.tie(nullptr);
 #endif
     int t = 1;
-//    cin >> t;
+    cin >> t;
     while (t--) {
         run();
     }

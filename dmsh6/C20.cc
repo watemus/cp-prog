@@ -1,3 +1,7 @@
+//
+// Created by watemus on 03.05.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -23,7 +27,27 @@ constexpr int INFI = 1'000'000'228;
 
 
 void run() {
-
+    int n, c;
+    cin >> n >> c;
+    int cnt = 0;
+    int tm = 0;
+    vector<int> cs(n);
+    for (int i = 0; i < n; i++) {
+        cin >> cs[i];
+        cin >> tm;
+        cnt += cs[i];
+    }
+    sort(all(cs));
+    int all = tm * n;
+    int ans = 0;
+    int psum = 0;
+    int i = 0;
+    while (i < n && psum + cs[i] <= all) {
+        psum += cs[i];
+        ans++;
+        i++;
+    }
+    cout << ans << '\n';
 }
 
 signed main() {

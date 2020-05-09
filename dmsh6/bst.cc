@@ -1,3 +1,7 @@
+//
+// Created by watemus on 03.05.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -23,7 +27,8 @@ constexpr int INFI = 1'000'000'228;
 
 
 void run() {
-
+    int a, b, c, d;
+    cin >> a >> b >> c >> d;
 }
 
 signed main() {

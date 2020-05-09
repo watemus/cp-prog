@@ -1,3 +1,7 @@
+//
+// Created by watemus on 01.05.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif

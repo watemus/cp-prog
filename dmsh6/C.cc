@@ -1,3 +1,7 @@
+//
+// Created by watemus on 03.05.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -21,8 +25,18 @@ constexpr int INFI = 1'000'000'228;
 #else
 #endif
 
+struct Product {
+    int time;
+    int count;
+};
 
 void run() {
+    int count_products, count_people;
+    cin >> count_products >> count_people;
+    vector<Product> products(count_products);
+    for (auto &product : products) {
+        cin  >> product.time >> product.count;
+    }
 
 }
 

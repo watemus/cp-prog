@@ -10,40 +10,40 @@ using namespace std;
 #define ff first
 #define ss second
 
-using ll = __int128_t;
+using ll = long long;
 using ld = long double;
 //#define int ll
-
+//
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
-const int AL = 12;
-const int MIN_EL = 1;
+const int AL = 101;
+const int MIN_EL = 0;
 
 const int sa_trash = 0;
 const int sa_root = 1;
-
 #ifdef LOCAL
 constexpr int SA_SIZE = 30;
 #else
-constexpr int SA_SIZE = 2'000'000;
+constexpr int SA_SIZE = 2'00'100;
 #endif
 
+
 struct Suffix_automaton {
-    int to[AL][SA_SIZE];
-    ll len[SA_SIZE];
-    int link[SA_SIZE];
-    ll dp[SA_SIZE];
     int size = 2;
     int end = sa_root;
-    bool term[SA_SIZE];
     int prev[SA_SIZE];
+    int to[AL][SA_SIZE];
+    set<int> has[SA_SIZE];
+    ll len[SA_SIZE];
+    int link[SA_SIZE];
+    bool term[SA_SIZE];
     int ans_v = sa_root;
     int prev_ch[SA_SIZE];
     ll ans = 0;
     Suffix_automaton() {
         fill(len, len + SA_SIZE, 0);
         fill(link, link + SA_SIZE, sa_trash);
-        fill(dp, dp + SA_SIZE, -1);
+        fill(has, has + SA_SIZE, set<int>());
         memset(term, 0, sizeof term);
         for (auto &to_i : to) {
             memset(to_i, sa_trash, sizeof to_i);
@@ -54,6 +54,7 @@ struct Suffix_automaton {
         int p = last;
         while (p != sa_trash && to[ch - MIN_EL][p] == sa_trash) {
             to[ch - MIN_EL][p] = cur;
+            has[p].insert(ch);
             p = link[p];
         }
         if (p != sa_trash) {
@@ -83,6 +84,7 @@ struct Suffix_automaton {
     }
     inline int cpy_node(int u, int ch) {
         int v = new_node(u, ch);
+        has[v] = has[u];
         for (auto &to_i : to) {
             to_i[v] = to_i[u];
         }
@@ -108,55 +110,45 @@ struct Suffix_automaton {
         }
         return cur != sa_trash;
     }
-    int calc_dp(int v) {
-        if (dp[v] != -1) {
-            return dp[v];
+    bool calc_ans(int v, int ln, int pst, int n) {
+        if (ln == n) {
+            ans += pst;
+            return true;
         }
-        if (term[v]) {
-            dp[v] = 1;
-        } else {
-            dp[v] = 0;
-        }
-        for (auto &to_i : to) {
-            if (to_i[v] != sa_trash) {
-                dp[v] += calc_dp(to_i[v]);
+        bool fnd = false;
+        for (auto u : has[v]) {
+            bool chk = calc_ans(to[u][v], ln + 1, pst, n);
+            if (chk) {
+                fnd = true;
+                pst = ln;
             }
         }
-        if (dp[v] * len[v] >= ans) {
-            ans = dp[v] * len[v];
-            ans_v = v;
-        }
-        return dp[v];
-    }
-    void print_refren() {
-        cout << static_cast<long long>(ans) << '\n';
-        vector<int> ans;
-        int cur = ans_v;
-        while (cur != sa_root) {
-            ans.push_back(prev_ch[cur]);
-            cur = prev[cur];
-        }
-        reverse(all(ans));
-        cout << ans.size() << '\n';
-        for (auto &el : ans) {
-            cout << el << ' ';
-        }
-        cout << '\n';
+        return fnd;
     }
 };
 
 
 void run() {
-    int n, m;
-    cin >> n >> m;
+    int n;
+    cin >> n;
+    if (n == 0) exit(0);
     vector<int> a(n);
+    set<int> dif;
     for (int i = 0; i < n; i++) {
         cin >> a[i];
+        dif.insert(a[i]);
+    }
+    if (dif.size() == 1) {
+        cout << n * (n - 1) << '\n';
+        return;
+    }
+    for (int i = 0; i < n; i++) {
+        a.push_back(a[i]);
     }
     Suffix_automaton sa;
     sa.add_string(a);
-    sa.calc_dp(sa_root);
-    sa.print_refren();
+    sa.calc_ans(sa_root, 0, 0, n);
+    cout << sa.ans << '\n';
 }
 
 signed main() {
@@ -166,7 +158,7 @@ signed main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
 #endif
-    int t = 1;
+    int t = 200;
 //    cin >> t;
     while (t--) {
         run();

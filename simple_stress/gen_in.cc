@@ -1,3 +1,7 @@
+//
+// Created by watemus on 12.04.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -23,15 +27,19 @@ constexpr int INFI = 1'000'000'228;
 
 
 void run() {
-
+    cout << 50000 << '\n';
+    for (int i = 0; i < 50000; i++) {
+        cout << i % 10 << ' ';
+    }
+    cout << "\n0\n";
 }
 
 signed main() {
 #ifdef LOCAL
-    std::freopen("input.txt", "r", stdin);
+    freopen("input.txt", "w", stdout);
 #else
-    std::ios_base::sync_with_stdio(false);
-    std::cin.tie(nullptr);
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
 #endif
     int t = 1;
 //    cin >> t;

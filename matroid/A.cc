@@ -1,3 +1,7 @@
+//
+// Created by watemus on 05.05.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -23,6 +27,17 @@ constexpr int INFI = 1'000'000'228;
 
 
 void run() {
+    int n;
+    cin >> n;
+    vector<pair<int, int>> a(n);
+    for (auto &[d, w] : a) {
+        cin >> d >> w;
+    }
+    sort(all(a), [](auto a, auto b){
+        if (a.ss == b.ss)
+            return a.ff > b.ff;
+        return a.ss > b.ss;
+    });
 
 }
 

@@ -1,3 +1,7 @@
+//
+// Created by watemus on 03.05.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -21,9 +25,27 @@ constexpr int INFI = 1'000'000'228;
 #else
 #endif
 
+int calc(int alen, int mlen) {
+    int ans = alen * (mlen);
+    ans -= (mlen * (mlen - 1) / 2);
+    return ans;
+}
 
 void run() {
-
+    int a, b, c, d;
+    cin >> a >> b >> c >> d;
+    int alen = b - a + 1;
+    int mlen = b - a + 1;
+    int ans = 0;
+    while (c > a && mlen > 0) {
+        if (c <= b) {
+            alen--;
+        }
+        ans += calc(alen, mlen);
+        mlen--;
+        c--;
+    }
+    cout << ans << '\n';
 }
 
 signed main() {
