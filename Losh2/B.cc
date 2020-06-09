@@ -1,3 +1,7 @@
+//
+// Created by watemus on 09.06.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -34,8 +38,21 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run() {
+const int MOD = 1e9 + 7;
 
+void run() {
+    int n, k;
+    cin >> n >> k;
+    vec<int> dp(n + 1), pdp(n + 1);
+    int ans = 0;
+    for (int i = 1; i <= n; i++) {
+        dp[i] = 1 + (pdp[i - 1] - pdp[max(0LL, i - k - 1)] + MOD);
+        dp[i] %= MOD;
+        pdp[i] = pdp[i - 1] + dp[i];
+        pdp[i] %= MOD;
+        ans = (ans + dp[i]) % MOD;
+    }
+    cout << ans << "\n";
 }
 /* stuff you should look for
 	* int overflow, array bounds
@@ -53,7 +70,7 @@ signed main() {
 #endif
     cout << fixed << setprecision(20);
     int t = 1;
-//    cin >> t;
+    cin >> t;
     while (t--) {
         run();
     }

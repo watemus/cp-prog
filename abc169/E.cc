@@ -1,3 +1,7 @@
+//
+// Created by watemus on 05.06.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -35,7 +39,28 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+    int n;
+    cin >> n;
+    vec<pair<int, int>> a(n);
+    for (auto &[x, y] : a) cin >> x >> y;
+    sort(all(a));
+    if (n % 2) {
+        int mx1 = a[n/2].first;
+        sort(all(a), [](auto a, auto b){
+            return a.second < b.second;
+        });
+        int mx2 = a[n/2].second;
+        cout << mx2 - mx1 + 1 << '\n';
+    } else {
+        int mx11 = a[n/2-1].first;
+        int mx12 = a[n/2].first;
+        sort(all(a), [](auto a, auto b){
+            return a.second < b.second;
+        });
+        int mx21 = a[n/2-1].second;
+        int mx22 = a[n/2].second;
+        cout << mx22 + mx21 - mx11 - mx12 + 1 << '\n';
+    }
 }
 /* stuff you should look for
 	* int overflow, array bounds

@@ -1,3 +1,7 @@
+//
+// Created by watemus on 06.06.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -35,7 +39,9 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+    int n, x, y;
+    cin >> n >> x >> y;
+    cout << max(1LL, min(n, x + y - n + 1)) << ' ' << min(n, x + y - 1) << '\n';
 }
 /* stuff you should look for
 	* int overflow, array bounds
@@ -53,7 +59,7 @@ signed main() {
 #endif
     cout << fixed << setprecision(20);
     int t = 1;
-//    cin >> t;
+    cin >> t;
     while (t--) {
         run();
     }

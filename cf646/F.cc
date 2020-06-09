@@ -12,21 +12,10 @@ using namespace std;
 
 using ll = long long;
 using ld = long double;
-
-template<typename T>
-using vec = vector<T>;
-
-template<typename T>
-using uset = unordered_set<T>;
-
-template<typename T1, typename T2>
-using umap = unordered_map<T1, T2>;
-
 #define int ll
 
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
-constexpr ld PI = acos(-1);
 
 vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
@@ -35,14 +24,16 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+    string s, t;
+    cin >> s >> t;
+    string sorted_s = s, sorted_t = t;
+    sort(all(sorted_s)), sort(all(sorted_t));
+    if (sorted_s != sorted_t) {
+        cout << "-1\n";
+        return;
+    }
+    vector<vector<int>> dp;
 }
-/* stuff you should look for
-	* int overflow, array bounds
-	* special cases (n=1?)
-	* do smth instead of nothing and stay organized
-	* WRITE STUFF DOWN
-*/
 
 signed main() {
 #ifdef LOCAL
@@ -51,7 +42,6 @@ signed main() {
     std::ios_base::sync_with_stdio(false);
     std::cin.tie(nullptr);
 #endif
-    cout << fixed << setprecision(20);
     int t = 1;
 //    cin >> t;
     while (t--) {
@@ -60,3 +50,9 @@ signed main() {
     return 0;
 }
 
+/* stuff you should look for
+	* int overflow, array bounds
+	* special cases (n=1?)
+	* do smth instead of nothing and stay organized
+	* WRITE STUFF DOWN
+*/

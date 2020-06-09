@@ -1,3 +1,7 @@
+//
+// Created by watemus on 04.06.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -11,18 +15,9 @@ using namespace std;
 #define ss second
 
 using ll = long long;
+using ull = unsigned long long;
 using ld = long double;
-
-template<typename T>
-using vec = vector<T>;
-
-template<typename T>
-using uset = unordered_set<T>;
-
-template<typename T1, typename T2>
-using umap = unordered_map<T1, T2>;
-
-#define int ll
+#define int ull
 
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
@@ -35,7 +30,15 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+    int n;
+    cin >> n;
+    int t = 0;
+    int ans = 0;
+    while ((1ULL << t) <= n) {
+        ans += n / (1ULL << t);
+        t++;
+    }
+    cout << ans << '\n';
 }
 /* stuff you should look for
 	* int overflow, array bounds
@@ -53,7 +56,7 @@ signed main() {
 #endif
     cout << fixed << setprecision(20);
     int t = 1;
-//    cin >> t;
+    cin >> t;
     while (t--) {
         run();
     }

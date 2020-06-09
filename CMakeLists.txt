@@ -3,5 +3,5 @@ project(cp_prog)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(cp_prog abc163/A.cc)
+add_executable(cp_prog Losh2/D.cc)
 add_compile_definitions(LOCAL)

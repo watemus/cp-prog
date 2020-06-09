@@ -1,3 +1,7 @@
+//
+// Created by watemus on 05.06.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -24,7 +28,7 @@ using umap = unordered_map<T1, T2>;
 
 #define int ll
 
-constexpr ll INFL = 1'000'000'000'000'000'228;
+constexpr ld INFL = 1'000'000'000'000'000'001;
 constexpr int INFI = 1'000'000'228;
 constexpr ld PI = acos(-1);
 
@@ -35,7 +39,28 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+    int n;
+    cin >> n;
+    ld cur = 1;
+    int z = 0;
+    bool fnd = false;
+    for (int i = 0; i < n; i++) {
+        int a;
+        cin >> a;
+        if (a == z) z++;
+        cur *= a;
+        if (cur >= INFL) {
+            fnd = true;
+        }
+    }
+    if (z > 0) {
+        puts("0");
+        return;
+    } else if (fnd) {
+        puts("-1");
+        return;
+    }
+    cout << int(cur) << '\n';
 }
 /* stuff you should look for
 	* int overflow, array bounds

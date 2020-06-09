@@ -1,3 +1,7 @@
+//
+// Created by watemus on 08.06.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -35,7 +39,17 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+    int n;
+    cin >> n;
+    vec<pair<string, string>> a(n);
+    for (auto &[x, y] : a) cin >> x >> y;
+    stable_sort(all(a), [](auto a, auto b){
+        return a.first < b.first;
+    });
+    cout << n << endl;
+    for (auto [x, y] : a) {
+        cout << x << ' ' << y << '\n';
+    }
 }
 /* stuff you should look for
 	* int overflow, array bounds

@@ -1,3 +1,7 @@
+//
+// Created by watemus on 09.06.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -35,7 +39,43 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+    int p;
+    cin >> p;
+    int n, m;
+    cin >> n >> m;
+    vec<vec<int>> hor(n, vec<int>(m)), ver(n, vec<int>(m));
+    vec<vec<int>> f(n, vec<int>(m));
+    int k;
+    cin >> k;
+    for (int i = 0; i < k; i++) {
+        int tp, x, y, cnt;
+        cin >> tp >> x >> y >> cnt;
+        x--; y--;
+        if (tp == 0) {
+            hor[x][y] = max(hor[x][y], cnt);
+        } else {
+            ver[x][y] = max(ver[x][y], cnt);
+        }
+    }
+    vec<int> c_hor(n), c_ver(m);
+    int ans1 = 0;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            c_hor[i] = max(c_hor[i], hor[i][j]);
+            c_ver[j] = max(c_ver[j], ver[i][j]);
+            if (c_hor[i] || c_ver[j]) {
+                f[i][j] = 1;
+            } else {
+                ans1++;
+            }
+            c_hor[i] = max(0LL, c_hor[i] - 1);
+            c_ver[j] = max(0LL, c_ver[j] - 1);
+        }
+    }
+    if (p == 1) {
+        cout << ans1 << '\n';
+        return;
+    }
 }
 /* stuff you should look for
 	* int overflow, array bounds

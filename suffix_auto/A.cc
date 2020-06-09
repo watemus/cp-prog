@@ -16,7 +16,7 @@ using ld = long double;
 //
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
-const int AL = 101;
+const int AL = 30;
 const int MIN_EL = 0;
 
 const int sa_trash = 0;
@@ -129,26 +129,18 @@ struct Suffix_automaton {
 
 
 void run() {
-    int n;
-    cin >> n;
-    if (n == 0) exit(0);
-    vector<int> a(n);
-    set<int> dif;
-    for (int i = 0; i < n; i++) {
-        cin >> a[i];
-        dif.insert(a[i]);
-    }
-    if (dif.size() == 1) {
-        cout << n * (n - 1) << '\n';
-        return;
-    }
-    for (int i = 0; i < n; i++) {
-        a.push_back(a[i]);
+    string s = "teoreticheskiyzachet";
+    vector<int> a;
+    for (auto ch : s) {
+        a.push_back(ch - 'a');
     }
     Suffix_automaton sa;
     sa.add_string(a);
-    sa.calc_ans(sa_root, 0, 0, n);
-    cout << sa.ans << '\n';
+    int cnt = 0;
+    for (int i = 0; i < AL; i++) {
+        cnt += sa.to[i][sa_root] != sa_trash;
+    }
+    cout << cnt << endl;
 }
 
 signed main() {
@@ -158,7 +150,7 @@ signed main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
 #endif
-    int t = 200;
+    int t = 1;
 //    cin >> t;
     while (t--) {
         run();

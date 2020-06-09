@@ -1,3 +1,7 @@
+//
+// Created by watemus on 09.06.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -34,8 +38,50 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run() {
+const int MAXN = (1 << 18) + 228;
 
+int t[MAXN];
+int a[MAXN];
+
+void build(int v, int lb, int rb) {
+    if (rb - lb == 1) {
+        t[v] = 1;
+    } else {
+        int mid = (lb + rb) / 2;
+        build(v * 2 + 1, lb, mid);
+        build(v * 2 + 2, mid, rb);
+        t[v] = t[v * 2 + 1] + t[v * 2 + 2] - (a[mid - 1] == a[mid]);
+    }
+}
+
+void upd(int v, int lb, int rb, int at, int nw) {
+    if (rb - lb == 1) {
+        a[lb] = nw;
+    } else {
+        int mid = (lb + rb) / 2;
+        if (at < mid)
+            upd(v * 2 + 1, lb, mid, at, nw);
+        else
+            upd(v * 2 + 2, mid, rb, at, nw);
+        t[v] = t[v * 2 + 1] + t[v * 2 + 2] - (a[mid - 1] == a[mid]);
+    }
+}
+
+void run() {
+    int n, q;
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+    build(0, 0, n);
+    cin >> q;
+    while (q--) {
+        int p, x;
+        cin >> p >> x;
+        p--;
+        upd(0, 0, n, p, x);
+        cout << t[0] << '\n';
+    }
 }
 /* stuff you should look for
 	* int overflow, array bounds

@@ -1,7 +1,13 @@
+//
+// Created by watemus on 08.06.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+using namespace __gnu_pbds;
 
 using namespace std;
 
@@ -34,8 +40,45 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run() {
+inline pair<int, int> check(vec<int> &a, int k, int mid) {
+    gp_hash_table<int, int> cnt;
+    for (int i = 0; i < k; i++) {
+        cnt[a[i]]++;
+    }
+    if (cnt.size() >= mid) return {1, k};
+    for (int i = k; i < a.size(); i++) {
+        cnt[a[i-k]]--;
+        if (cnt[a[i-k]] == 0)
+            cnt.erase(a[i-k]);
+        cnt[a[i]]++;
+        if (cnt.size() >= mid) return {i - k + 2, i + 1};
+    }
+    return {-1, -1};//dslk
+}
 
+void run() {
+    int n, k;
+    cin >> n >> k;
+    vec<int> a(n);
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+    int lb = k - 1;
+    int rb = n + 1;
+    int al, ar;
+    while (lb + 1 < rb) {
+        int mid = (lb + rb) / 2;
+        auto cc= check(a, mid, k);
+        int cl = cc.first;
+        int cr = cc.second;
+        if (cl != -1) {
+            rb = mid;
+            al = cl, ar = cr;
+        } else {
+            lb = mid;
+        }
+    }
+    cout << al << " " << ar << '\n';
 }
 /* stuff you should look for
 	* int overflow, array bounds

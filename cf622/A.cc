@@ -1,3 +1,7 @@
+//
+// Created by watemus on 06.06.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -35,7 +39,27 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+    int sa, sb, sc;
+    cin >> sa >> sb >> sc;
+    int ans = 0;
+    vector<int> masks(7);
+    for (int i = 0; i < 7; i++) masks[i] = i + 1;
+    do {
+        int a = sa, b = sb, c= sc;
+        int cans = 0;
+        for (auto mask : masks) {
+            int ta = a, tb = b, tc = c;
+            if ((1 << 0) & mask) ta--;
+            if ((1 << 1) & mask) tb--;
+            if ((1 << 2) & mask) tc--;
+            if (ta >= 0 && tb >= 0 && tc >= 0) {
+                a = ta, b = tb, c = tc;
+                cans++;
+            }
+            ans = max(cans, ans);
+        }
+    } while (next_permutation(all(masks)));
+    cout << ans << '\n';
 }
 /* stuff you should look for
 	* int overflow, array bounds
@@ -53,7 +77,7 @@ signed main() {
 #endif
     cout << fixed << setprecision(20);
     int t = 1;
-//    cin >> t;
+    cin >> t;
     while (t--) {
         run();
     }

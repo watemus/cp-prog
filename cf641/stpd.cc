@@ -1,4 +1,8 @@
 //
+// Created by watemus on 12.05.2020.
+//
+
+//
 // Created by watemus on 26.04.2020.
 //
 
@@ -31,8 +35,12 @@ void run() {
     cin >> n >> k;
     vector<int> a(n);
     for (int i = 0; i < n; i++) cin >> a[i];
-    for (int L = 0; i < n; i++) {
-        for (int R = i + 1; R < n; R++) {
+    if (a.size() == 1 && a[0] == k) {
+        puts("yes");
+        return;
+    }
+    for (int L = 0; L < n; L++) {
+        for (int R = L + 1; R < n; R++) {
             vector<int> cr {a.begin() + L, a.begin() + R + 1};
             sort(all(cr));
             if (cr[(cr.size() + 1) / 2 - 1] == k) {

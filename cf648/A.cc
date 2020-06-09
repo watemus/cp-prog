@@ -1,3 +1,6 @@
+//
+// Created by watemus on 07.06.2020.
+//
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -35,7 +38,27 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+    int n = 1000;
+    //cin >> n;
+    vec<int> a(n);
+    int cnt = 0;
+    int st = 1;
+    int md = 2;
+    while (cnt < n) {
+        int cc = 0;
+        for (int i = 0; i < n; i++) {
+            if (a[i] == 0) {
+                if (cc == 0) {
+                    a[i] = st;
+                    cnt++;
+                }
+                cc++;
+                cc %= md;
+            }
+        }
+        st++;
+    }
+    cout << st << '\n';
 }
 /* stuff you should look for
 	* int overflow, array bounds
@@ -53,10 +76,11 @@ signed main() {
 #endif
     cout << fixed << setprecision(20);
     int t = 1;
-//    cin >> t;
+   cin >> t;
     while (t--) {
         run();
     }
     return 0;
 }
+
 

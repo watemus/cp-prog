@@ -1,3 +1,7 @@
+//
+// Created by watemus on 08.06.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -34,8 +38,46 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run() {
+const int MAXN = 700;
+const int MAXM = 500;
 
+int dp[MAXM][MAXN];
+int sdp[MAXN][MAXN];
+
+void run() {
+    int n, m;
+    cin >> n >> m;
+    //n = 700;
+    //m = 500;
+    vec<int> a(n);
+    for (int i = 0; i < n; i++) {
+       cin >> a[i];
+       // a[i] = 1000;
+    }
+    for (int i = 0; i < m; i++) {
+        {
+            fill(dp[i], dp[i] + n, INFL);
+        }
+    }
+    for (int i = 0; i < n; i++) {
+        sdp[i][i] = a[i];
+
+    }
+    dp[0][0] = a[0];
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            sdp[i][j] = sdp[i][j - 1] + (j - i + 1) * a[j];
+            if (i == 0) dp[0][j] = sdp[i][j];
+        }
+    }
+    for (int i = 1; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            for (int k = j + 1; k < n; k++) {
+                dp[i][k] = min(dp[i][k], dp[i - 1][j] + sdp[j + 1][k]);
+            }
+        }
+    }
+    cout << dp[m-1][n-1] << '\n';
 }
 /* stuff you should look for
 	* int overflow, array bounds
