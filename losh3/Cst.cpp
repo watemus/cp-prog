@@ -1,9 +1,11 @@
+//
+// Created by watemus on 10.06.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-using namespace __gnu_pbds;
 
 using namespace std;
 
@@ -37,7 +39,17 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
+   int n, k;
+   cin >> n >> k;
+   list<int> a(n);
+   vec<list<int>::iterator> pr(n), nx(n);
+   for (auto el : a) {
+       cin >> el;
+   }
 
+   vec<int> shift(a.size());
+   while (n > 1) {
+   }
 }
 /* stuff you should look for
 	* int overflow, array bounds

@@ -1,3 +1,7 @@
+//
+// Created by watemus on 11.06.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -36,8 +40,43 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run() {
+const int MAX = 1e7 + 10;
 
+int t[MAX];
+
+void run() {
+    memset(t, -1, sizeof t);
+    for (int i = 2; i < MAX; i++) {
+        if (t[i] == -1) {
+            t[i] = i;
+            for (int j = i; j < MAX; j += i) {
+                t[j] = i;
+            }
+        }
+    }
+    int n;
+    cin >> n;
+    vec<int> a(n), b(n);
+    for (int i = 0; i < n; i++) {
+        int el;
+        cin >> el;
+        int d1 = t[el];
+        int d2 = t[el / d1];
+        if (gcd(d1 + d2, el) == 1 && d2 > 1) {
+            a[i] = d1;
+            b[i] = d2;
+        } else {
+            a[i] = b[i] = -1;
+        }
+    }
+    for (int i = 0; i < n; i++) {
+        cout << a[i] << ' ';
+    }
+    cout << '\n';
+    for (int i = 0 ; i < n; i++) {
+        cout << b[i] << " ";
+    }
+    cout << '\n';
 }
 /* stuff you should look for
 	* int overflow, array bounds

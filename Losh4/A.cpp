@@ -1,3 +1,7 @@
+//
+// Created by watemus on 11.06.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -36,8 +40,38 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run() {
+const int MOD1 = 1e9 + 7;
+const int MOD2 = 998344353;
 
+void run() {
+    int cnt = 2.9e6;
+    vec<int> fib1(cnt), fib2(cnt);
+    uset<int> st;
+    st.reserve(cnt);
+    fib1[0] = fib1[1] = fib2[0] = fib2[1] = 1;
+    for (int i = 2; i < cnt; i++) {
+        fib1[i] = (fib1[i - 1] + fib1[i - 2]) % MOD1;
+        fib2[i] = (fib2[i - 1] + fib2[i - 2]) % MOD2;
+    }
+    for (int i = 0; i < cnt; i++) {
+        st.insert(fib1[i] * fib2[i]);
+    }
+    int n;
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        string s;
+        cin >> s;
+        int a1 = 0, a2 = 0;
+        for (auto ch : s) {
+            a1 = (a1 * 10 + ch - '0') % MOD1;
+            a2 = (a2 * 10 + ch - '0') % MOD2;
+        }
+        if (st.count(a1 * a2)) {
+            cout << "Yes\n";
+        } else {
+            cout << "No\n";
+        }
+    }
 }
 /* stuff you should look for
 	* int overflow, array bounds

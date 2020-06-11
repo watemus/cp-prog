@@ -1,9 +1,11 @@
+//
+// Created by watemus on 11.06.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
 #include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-using namespace __gnu_pbds;
 
 using namespace std;
 
