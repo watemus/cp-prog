@@ -1,3 +1,7 @@
+//
+// Created by watemus on 12.06.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -36,6 +40,11 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
+    int n, a, k;
+    cin >> n >> a >> k;
+    string s;
+    cin >> s;
+    cout << n * k + n - k<< '\n';
 
 }
 /* stuff you should look for

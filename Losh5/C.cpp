@@ -1,8 +1,12 @@
+//
+// Created by watemus on 12.06.2020.
+//
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
-
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+using namespace __gnu_pbds;
 
 using namespace std;
 
@@ -36,7 +40,35 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+    int n, m;
+    cin >> n >> m;
+    vec<int> p(n);
+    for (int i = 0; i < n; i++) {
+        cin >> p[i];
+        p[i]--;
+    }
+    vec<pair<int, int>> a(m);
+    for (int i = 0; i < m; i++) {
+        cin >> a[i].first;
+        a[i].second = i;
+    }
+    vec<int> ans;
+    for (int i = 0; i + n <= m; i++) {
+        bool correct = true;
+        for (int j = 0; j < n - 1; j++) {
+            if (a[i + p[j]].first > a[i + p[j + 1]].first) {
+                correct = false;
+                break;
+            }
+        }
+        if (correct)
+            ans.push_back(i + 1);
+    }
+    cout << ans.size() << '\n';
+    for (auto el : ans) {
+        cout << el << ' ';
+    }
+    cout << '\n';
 }
 /* stuff you should look for
 	* int overflow, array bounds
@@ -60,4 +92,5 @@ signed main() {
     }
     return 0;
 }
+
 

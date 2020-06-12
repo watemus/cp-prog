@@ -167,7 +167,7 @@ void set_ans(int v, int p) {
                 ans[p] = 'L';
             } else {
                 ans[p] = 'R';
-            }9
+            }
         } else if (is_bridge[p]) {
             ans[p] = 'B';
         }
