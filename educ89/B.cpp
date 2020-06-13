@@ -41,7 +41,39 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+    int n, x, m;
+    cin >> n >> x >> m;
+    vector<pair<int, int>> segs{{x, x}};
+    for (int i = 0; i < m; i++) {
+        int lb, rb;
+        cin >> lb >> rb;
+        for (auto [lt, rt] : segs) {
+            if (max(lt, lb) <= min(rb, rt)) {
+                segs.emplace_back(lb, rb);
+                break;
+            }
+        }
+    }
+    vector<pair<int, int>> scan;
+    for (auto [lb, rb] : segs) {
+        scan.emplace_back(lb, -1);
+        scan.emplace_back(rb, 1);
+    }
+    sort(all(scan));
+    int lvl = 1;
+    int ans = 1;
+    for (int i = 1; i < scan.size(); i++) {
+        if (lvl > 0) {
+            ans += scan[i].first - scan[i - 1].first;
+        }
+        if (scan[i].second == -1) {
+            lvl++;
+            if (lvl == 1) ans++;
+        } else {
+            lvl--;
+        }
+    }
+    cout << ans << '\n';
 }
 /* stuff you should look for
 	* int overflow, array bounds
@@ -59,7 +91,7 @@ signed main() {
 #endif
     cout << fixed << setprecision(20);
     int t = 1;
-//    cin >> t;
+    cin >> t;
     while (t--) {
         run();
     }

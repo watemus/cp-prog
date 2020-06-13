@@ -1,3 +1,7 @@
+//
+// Created by watemus on 12.06.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -27,7 +31,7 @@ using umap = unordered_map<T1, T2>;
 
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
-const ld PI = acos(-1);
+constexpr ld PI = acos(-1);
 
 vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
@@ -36,7 +40,16 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+    int n = 5e5, m = 1e6;
+    cout << n << ' ' << m << endl;
+    for (int i = 0; i < n; i++) {
+        cout << i  + 1 << ' ';
+    }
+    cout << endl;
+    for (int i = 0; i < m; i++) {
+        cout << i + 1 << ' ';
+    }
+    cout << '\n';
 }
 /* stuff you should look for
 	* int overflow, array bounds
@@ -47,7 +60,7 @@ void run() {
 
 signed main() {
 #ifdef LOCAL
-    std::freopen("input.txt", "r", stdin);
+    std::freopen("input.txt", "w", stdout);
 #else
     std::ios_base::sync_with_stdio(false);
     std::cin.tie(nullptr);

@@ -1,3 +1,7 @@
+//
+// Created by watemus on 13.06.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -36,7 +40,49 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+    string s;
+    cin >> s;
+    vector<int> st;
+    queue<int> q;
+    for (int i = 0; i < s.length(); i++) {
+        if (s[i] == '(') {
+            st.push_back(i);
+        } else if (s[i] == ')'){
+            if (st.size()) {
+                st.pop_back();
+            } else {
+                q.push(i);
+            }
+        }
+    }
+    queue<int> qst;
+    for (int i = 0; i < st.size(); i++) {
+        qst.push(st[i]);
+    }
+    bool was = false;
+    for (int i = 0; i < s.length(); i++) {
+        if (s[i] != '?') {
+            cout << s[i];
+            continue;
+        }
+        while (q.size() && q.front() < i) {
+            q.pop();
+        }
+        if (q.size()) {
+            cout << '(';
+            q.pop();
+        } else if (qst.size() && qst.front() < i) {
+            cout << ')';
+            qst.pop();
+        } else {
+            if (!was) {
+                cout << '(';
+            } else {
+                cout << ')';
+            }
+            was = !was;
+        }
+    }
 }
 /* stuff you should look for
 	* int overflow, array bounds

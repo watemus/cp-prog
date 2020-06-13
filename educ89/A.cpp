@@ -43,20 +43,7 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 void run() {
     int a, b;
     cin >> a >> b;
-    int ans = min(a, b) / 3;
-    a -= ans * 3;
-    b -= ans * 3;
-    while (a > 1 && b > 0) {
-        a -= 2;
-        b -= 1;
-        ans++;
-    }
-    while (a > 0 && b > 1) {
-        a -= 1;
-        b -= 2;
-        ans++;
-    }
-    cout << ans << '\n';
+    cout << min({a, b, (a + b) / 3}) << '\n';
 }
 /* stuff you should look for
 	* int overflow, array bounds
