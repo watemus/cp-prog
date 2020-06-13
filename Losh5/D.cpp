@@ -5,10 +5,8 @@
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
-#include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-using namespace __gnu_pbds;
 
+#include <bits/stdc++.h>
 #ifndef LOCAL
 #pragma GCC optimize("Ofast")
 #pragma GCC optimize("no-stack-protector")
@@ -41,7 +39,6 @@ using umap = unordered_map<T1, T2>;
 
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
-constexpr ld PI = acos(-1);
 
 vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
