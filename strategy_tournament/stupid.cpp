@@ -58,6 +58,8 @@ public:
         }
         int ans_cnt = 0;
         for (auto [col, cnt] : color_cnt) {
+            if (col == field[0][0]) continue;
+            if (col == field[height - 1][width - 1]) continue;
             if (cnt > ans_cnt) {
                 ans = col;
                 ans_cnt = cnt;
