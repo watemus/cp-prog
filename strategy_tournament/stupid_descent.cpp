@@ -1,4 +1,8 @@
 //
+// Created by watemus on 14.06.2020.
+//
+
+//
 // Created by watemus on 13.06.2020.
 //
 
@@ -95,6 +99,8 @@ private:
 };
 
 int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
     Strategy s;
     s.init();
     while (true) {
