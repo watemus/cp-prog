@@ -6,10 +6,10 @@
 
 using namespace std;
 
-#define all(a) a.begin(), a.end()
-#define rall(a) a.rbegin(), a.rend()
-#define ff first
-#define ss second
+#define ALL(a) a.begin(), a.end()
+#define RALL(a) a.rbegin(), a.rend()
+#define FF first
+#define SS second
 
 using ll = long long;
 using ld = long double;
@@ -28,6 +28,7 @@ using umap = unordered_map<T1, T2>;
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
 const ld PI = acos(-1);
+mt19937 rnd(chrono::steady_clock::now().time_since_epoch().count());
 
 vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
