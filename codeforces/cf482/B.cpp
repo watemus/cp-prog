@@ -1,5 +1,5 @@
 //
-// Created by watemus on 13.06.2020.
+// Created by watemus on 22.06.2020.
 //
 
 #ifdef LOCAL
@@ -10,10 +10,10 @@
 
 using namespace std;
 
-#define all(a) a.begin(), a.end()
-#define rall(a) a.rbegin(), a.rend()
-#define ff first
-#define ss second
+#define ALL(a) a.begin(), a.end()
+#define RALL(a) a.rbegin(), a.rend()
+#define FF first
+#define SS second
 
 using ll = long long;
 using ld = long double;
@@ -32,6 +32,7 @@ using umap = unordered_map<T1, T2>;
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
 const ld PI = acos(-1);
+mt19937 rnd(chrono::steady_clock::now().time_since_epoch().count());
 
 vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
@@ -39,32 +40,39 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
+map<int, int> get_cnt(string &s) {
+    map<int, int> cnt;
+    for (auto ch : s) {
+        cnt[ch]++;
+    }
+    return cnt;
+}
+
 void run() {
     int n;
     cin >> n;
-    set<int> cr;
-    for (int i = 0; i < n * 3; i++) {
-        cr.insert(i);
-    }
-    vec<int> a(n);
-    for (int i = 0; i < n; i++) {
-        cin >> a[i];
-        if (a[i] > i + 1) {
-            cout << "-1\n";
-            return;
-        }
-        if (cr.count(a[i])) cr.erase(a[i]);
-    }
-    vec<int> b(n);
-    for (int i = 0; i < n; i++) {
-        b[i] = *cr.begin();
-        cr.erase(b[i]);
-        if (i == n - 1 || (i < n - 1 && a[i] != a[i + 1])) {
-            cr.insert(a[i]);
+    string s[3];
+    cin >> s[0] >> s[1] >> s[2];
+    int ans[3] = {0, 0, 0};
+    map<int, int> cnt[3];
+    for (int i : {0, 1, 2}) {
+        cnt[i] = get_cnt(s[i]);
+        for (auto [x, y] : cnt[i]) {
+            int cur = y + n;
+            if (cur > s[i].size()) {
+                cur = s[i].size() - (cur % s[i].size() % 2);
+            }
+            ans[i] = max(ans[i], cur);
         }
     }
-    for (int i = 0; i < n; i++) {
-        cout << b[i] << ' ';
+    if (ans[0] > ans[1] && ans[0] > ans[2]) {
+        cout << "Kuro\n";
+    } else if (ans[1] > ans[0] && ans[1] > ans[2]) {
+        cout << "Shiro\n";
+    } else if (ans[2] > ans[1] && ans[2] > ans[0]) {
+        cout << "Katie\n";
+    } else {
+        cout << "Draw\n";
     }
 }
 /* stuff you should look for

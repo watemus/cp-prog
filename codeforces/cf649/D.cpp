@@ -39,8 +39,101 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run() {
+const int MAXN = 1e5 + 20;
 
+vec<int> g[MAXN];
+
+int dep[MAXN], dep_mod[2];
+
+void tree_dfs(int v, int p, int d) {
+    dep_mod[dep[v] % 2]++;
+    for (auto u : g[v]) {
+        if (u != p) {
+            dep[u] = dep[v] + 1;
+            tree_dfs(u, v, d + 1);
+        }
+    }
+}
+
+int usd[MAXN];
+vec<int> st;
+int k;
+
+void dfs(int v, int p) {
+    st.push_back(v);
+    usd[v] = 1;
+    vec<int> was;
+    for (auto u : g[v]) {
+        if (usd[u] && u != p) was.push_back(u);
+    }
+    sort(all(was), [](int u, int v){
+        return dep[u] > dep[v];
+    });
+    for (auto u : was) {
+        {
+            if (u == p) continue;
+            if (dep[v] - dep[u] + 1 <= k) {
+                cout << "2\n";
+                cout << dep[v] - dep[u] + 1 << '\n';
+                for (int i = 0; i < dep[v] - dep[u] + 1; i++) {
+                    cout << st[st.size() - i - 1] + 1 << ' ';
+                }
+                cout << '\n';
+                exit(0);
+            } else {
+                cout << "1\n";
+                for (int i = 0; i < (k + 1) / 2; i++) {
+                    cout << st[st.size() - 1 - i * 2] + 1 << ' ';
+                }
+                cout << '\n';
+                exit(0);
+
+            }
+        }
+    }
+    for (auto u : g[v]) {
+        if (!usd[u]) {
+            dep[u] = dep[v] + 1;
+            dfs(u, v);
+        }
+    }
+    st.pop_back();
+}
+
+void run() {
+    int n, m;
+    cin >> n >> m >> k;
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        cin >> u >> v;
+        u--, v--;
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+    if (m == n - 1) {
+        cout << "1\n";
+        dep[0] = 0;
+        tree_dfs(0, 0, 0);
+        int cnt = 0;
+        if (dep_mod[0] > dep_mod[1]) {
+            for (int i = 0; i < n && cnt < (k + 1) / 2; i++) {
+                if (dep[i] % 2 == 0) {
+                    cout << i + 1 << ' ';
+                    cnt++;
+                }
+            }
+        } else {
+            for (int i = 0; i < n && cnt < (k + 1) / 2; i++) {
+                if (dep[i] % 2 == 1) {
+                    cout << i + 1 << ' ';
+                    cnt++;
+                }
+            }
+        }
+    } else {
+        dep[0] = 0;
+        dfs(0, 0);
+    }
 }
 /* stuff you should look for
 	* int overflow, array bounds

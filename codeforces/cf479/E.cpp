@@ -1,5 +1,5 @@
 //
-// Created by watemus on 18.06.2020.
+// Created by watemus on 22.06.2020.
 //
 
 #ifdef LOCAL
@@ -10,10 +10,10 @@
 
 using namespace std;
 
-#define all(a) a.begin(), a.end()
-#define rall(a) a.rbegin(), a.rend()
-#define ff first
-#define ss second
+#define ALL(a) a.begin(), a.end()
+#define RALL(a) a.rbegin(), a.rend()
+#define FF first
+#define SS second
 
 using ll = long long;
 using ld = long double;
@@ -32,6 +32,7 @@ using umap = unordered_map<T1, T2>;
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
 const ld PI = acos(-1);
+mt19937 rnd(chrono::steady_clock::now().time_since_epoch().count());
 
 vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
@@ -39,42 +40,44 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
+vec<vec<int>> g;
+vec<int> usd;
+set<int> diff;
+void dfs(int v) {
+    usd[v] = 1;
+    diff.insert(g[v].size());
+    for (auto u : g[v]) {
+        if (!usd[u]) {
+            dfs(u);
+        }
+    }
+}
+
 void run() {
-    int n, m;
-    cin >> n >> m;
-    vec<vec<int>> g(n), rg(n);
+    int n;
+    cin >> n;
+    int m;
+    cin >> m;
+    g.assign(n, {});
     for (int i = 0; i < m; i++) {
         int u, v;
         cin >> u >> v;
         u--, v--;
         g[u].push_back(v);
-        rg[v].push_back(u);
+        g[v].push_back(u);
     }
-    vec<int> clr(n);
+    usd.assign(n, 0);
+    int ans = 0;
     for (int i = 0; i < n; i++) {
-        vec<int> cnt = {0, 0, 0};
-        for (auto u : rg[i]) {
-            cnt[clr[u]]++;
-        }
-        if (!cnt[0] && !cnt[1]) {
-            clr[i] = 0;
-        }
-        else if (cnt[0] && !cnt[1]) {
-            clr[i] = 1;
-        }
-        else if (cnt[1]) {
-            clr[i] = 2;
+        if (!usd[i]) {
+            diff.clear();
+            dfs(i);
+            if (diff.size() == 1 && *diff.begin() == 2) {
+                ans++;
+            }
         }
     }
-    vec<int> ans;
-    for (int i = 0; i < n; i++) {
-        if (clr[i] == 2) ans.push_back(i + 1);
-    }
-    cout << ans.size() << '\n';
-    for (auto v : ans) {
-        cout << v << ' ';
-    }
-    cout << '\n';
+    cout << ans << '\n';
 }
 /* stuff you should look for
 	* int overflow, array bounds
@@ -92,7 +95,7 @@ signed main() {
 #endif
     cout << fixed << setprecision(20);
     int t = 1;
-    cin >> t;
+//    cin >> t;
     while (t--) {
         run();
     }

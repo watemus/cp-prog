@@ -1,5 +1,5 @@
 //
-// Created by watemus on 18.06.2020.
+// Created by watemus on 24.06.2020.
 //
 
 #ifdef LOCAL
@@ -10,10 +10,10 @@
 
 using namespace std;
 
-#define all(a) a.begin(), a.end()
-#define rall(a) a.rbegin(), a.rend()
-#define ff first
-#define ss second
+#define ALL(a) a.begin(), a.end()
+#define RALL(a) a.rbegin(), a.rend()
+#define FF first
+#define SS second
 
 using ll = long long;
 using ld = long double;
@@ -32,6 +32,7 @@ using umap = unordered_map<T1, T2>;
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
 const ld PI = acos(-1);
+mt19937 rnd(chrono::steady_clock::now().time_since_epoch().count());
 
 vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
@@ -42,39 +43,37 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 void run() {
     int n, m;
     cin >> n >> m;
-    vec<vec<int>> g(n), rg(n);
-    for (int i = 0; i < m; i++) {
-        int u, v;
-        cin >> u >> v;
-        u--, v--;
-        g[u].push_back(v);
-        rg[v].push_back(u);
-    }
-    vec<int> clr(n);
+    vec<int> w(n);
     for (int i = 0; i < n; i++) {
-        vec<int> cnt = {0, 0, 0};
-        for (auto u : rg[i]) {
-            cnt[clr[u]]++;
-        }
-        if (!cnt[0] && !cnt[1]) {
-            clr[i] = 0;
-        }
-        else if (cnt[0] && !cnt[1]) {
-            clr[i] = 1;
-        }
-        else if (cnt[1]) {
-            clr[i] = 2;
-        }
+        cin >> w[i];
+    }
+    set<int> wst;
+    vec<set<int>> s(n);
+    vec<pair<int, int>> a(m);
+    set<int> all;
+    for (int i = 0; i < m; i++) {
+        int x, y;
+        cin >> x >> y;
+        x--, y--;
+        s[x].insert(i);
+        s[y].insert(i);
+        a[i] = {x, y};
+        if (s[x].size() == w[x] + 1) wst.erase(x);
+        if (s[y].size() == w[y] + 1) wst.erase(y);
+        all.insert(i);
+    }
+    if (wst.empty()) {
+        cout << "DEAD\n";
+        return;
     }
     vec<int> ans;
-    for (int i = 0; i < n; i++) {
-        if (clr[i] == 2) ans.push_back(i + 1);
+    while (wst.size()) {
+        int x = *wst.begin();
+        wst.erase(x);
+        while (s[x].size()) {
+
+        }
     }
-    cout << ans.size() << '\n';
-    for (auto v : ans) {
-        cout << v << ' ';
-    }
-    cout << '\n';
 }
 /* stuff you should look for
 	* int overflow, array bounds
@@ -92,7 +91,7 @@ signed main() {
 #endif
     cout << fixed << setprecision(20);
     int t = 1;
-    cin >> t;
+//    cin >> t;
     while (t--) {
         run();
     }

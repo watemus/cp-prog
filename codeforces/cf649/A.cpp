@@ -40,34 +40,25 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-    int n, x, sm = 0;
+    int n, x;
     cin >> n >> x;
-    map<int, int> mp;
-    mp[0] = -1;
-    int j = -1;
-    int ans = 0;
+    vec<int> a(n);
     for (int i = 0; i < n; i++) {
-        int el;
-        cin >> el;
-        sm += el;
-        sm %= x;
-        if (sm != 0) {
-            j = i;
-            ans = max(ans, i + 1);
-        }
-        if (!mp.count(sm)) mp[sm] = i;
+        cin >> a[i];
     }
-    if (sm % x) {
-        cout << n << '\n';
-        return;
+    int ans = -1;
+    int cur = 0;
+    for (int i = 0; i < n; i++) {
+        cur += a[i];
+        if (cur % x != 0) ans = max(i + 1, ans);
     }
-    if (j == -1) {
-        cout << "-1\n";
-        return;
+    cur = 0;
+    reverse(all(a));
+    for (int i = 0; i < n; i++) {
+        cur += a[i];
+        if (cur % x != 0) ans = max(ans, i + 1);
     }
-    if (sm == 0) {
-        cout << max(ans, n - j - 1) << '\n';
-    }
+    cout << ans << '\n';
 }
 /* stuff you should look for
 	* int overflow, array bounds

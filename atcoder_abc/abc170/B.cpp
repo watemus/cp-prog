@@ -1,9 +1,14 @@
+//
+// Created by watemus on 24.06.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
 
 #include <bits/stdc++.h>
 
+using namespace std;
 
 #define ALL(a) a.begin(), a.end()
 #define RALL(a) a.rbegin(), a.rend()
@@ -14,33 +19,39 @@ using ll = long long;
 using ld = long double;
 
 template<typename T>
-using vec = std::vector<T>;
+using vec = vector<T>;
 
 template<typename T>
-using uset = std::unordered_set<T>;
+using uset = unordered_set<T>;
 
 template<typename T1, typename T2>
-using umap = std::unordered_map<T1, T2>;
+using umap = unordered_map<T1, T2>;
 
-using std::set;
-using std::map;
-using std::cin;
-using std::cout;
-using std::pair;
+#define int ll
 
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
 const ld PI = acos(-1);
-std::mt19937 rnd(std::chrono::steady_clock::now().time_since_epoch().count());
+mt19937 rnd(chrono::steady_clock::now().time_since_epoch().count());
 
-vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
 #ifdef LOCAL
 #else
 #endif
 
 void run() {
-
+    int legs, animals;
+    cin >> animals >> legs;
+    for (int i = 0; i < 1000; i++) {
+        for (int j = 0; j < 1000; j++) {
+            if (i * 2 + j * 4 == legs && i + j == animals) {
+                cout << "Yes\n";
+                return;
+            }
+        }
+    }
+    cout << "No\n";
 }
 /* stuff you should look for
 	* int overflow, array bounds
@@ -56,7 +67,7 @@ signed main() {
     std::ios_base::sync_with_stdio(false);
     std::cin.tie(nullptr);
 #endif
-    cout << std::fixed << std::setprecision(20);
+    cout << fixed << setprecision(20);
     int t = 1;
 //    cin >> t;
     while (t--) {

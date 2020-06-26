@@ -1,5 +1,5 @@
 //
-// Created by watemus on 18.06.2020.
+// Created by watemus on 25.06.2020.
 //
 
 #ifdef LOCAL
@@ -10,10 +10,10 @@
 
 using namespace std;
 
-#define all(a) a.begin(), a.end()
-#define rall(a) a.rbegin(), a.rend()
-#define ff first
-#define ss second
+#define ALL(a) a.begin(), a.end()
+#define RALL(a) a.rbegin(), a.rend()
+#define FF first
+#define SS second
 
 using ll = long long;
 using ld = long double;
@@ -32,6 +32,7 @@ using umap = unordered_map<T1, T2>;
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
 const ld PI = acos(-1);
+mt19937 rnd(chrono::steady_clock::now().time_since_epoch().count());
 
 vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
@@ -40,41 +41,32 @@ vector<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-    int n, m;
-    cin >> n >> m;
-    vec<vec<int>> g(n), rg(n);
-    for (int i = 0; i < m; i++) {
-        int u, v;
-        cin >> u >> v;
-        u--, v--;
-        g[u].push_back(v);
-        rg[v].push_back(u);
-    }
-    vec<int> clr(n);
-    for (int i = 0; i < n; i++) {
-        vec<int> cnt = {0, 0, 0};
-        for (auto u : rg[i]) {
-            cnt[clr[u]]++;
-        }
-        if (!cnt[0] && !cnt[1]) {
-            clr[i] = 0;
-        }
-        else if (cnt[0] && !cnt[1]) {
-            clr[i] = 1;
-        }
-        else if (cnt[1]) {
-            clr[i] = 2;
+    int n;
+    cin >> n;
+    vec<int> a(n + 1), p1(n + 1), p2(n + 1);
+    int mn1 = -INFL, mn2 = 0;
+    int ans = 0;
+    int cans = 0;
+    for (int i = 1; i <= n; i++) {
+        cin >> a[i];
+        if (i % 2) {
+            cans += a[i];
+            p2[i] = p2[i - 1] + a[i];
+            if (mn1 - p2[i] >= ans) {
+                ans = mn1 - p2[i];
+            }
+            mn1 = max(mn1, p2[i]);
+        } else {
+            p2[i] = p2[i - 1] - a[i];
+            if (mn2 - p2[i] >= ans) {
+                ans = mn2 - p2[i];
+            }
+            mn2 = max(mn2, p2[i]);
         }
     }
-    vec<int> ans;
-    for (int i = 0; i < n; i++) {
-        if (clr[i] == 2) ans.push_back(i + 1);
-    }
-    cout << ans.size() << '\n';
-    for (auto v : ans) {
-        cout << v << ' ';
-    }
-    cout << '\n';
+    ans += cans;
+    cout << ans << '\n';
+
 }
 /* stuff you should look for
 	* int overflow, array bounds
