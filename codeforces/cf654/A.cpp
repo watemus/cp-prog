@@ -1,3 +1,7 @@
+//
+// Created by watemus on 01.07.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -34,26 +38,10 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run();
-
-signed main() {
-#ifdef LOCAL
-  std::freopen("input.txt", "r", stdin);
-#else
-  std::ios_base::sync_with_stdio(false);
-  std::cin.tie(nullptr);
-#endif
-  int t = 1;
-  //cin >> t;
-  while (t--) {
-    run();
-  }
-  return 0;
-}
-
-
 void run() {
-
+  int n;
+  cin >> n;
+  cout << (n + 1) / 2 << endl;
 }
 /* stuff you should look for
 	* int overflow, array bounds
@@ -62,4 +50,18 @@ void run() {
 	* WRITE STUFF DOWN
 */
 
+signed main() {
+#ifdef LOCAL
+  std::freopen("input.txt", "r", stdin);
+#else
+  std::ios_base::sync_with_stdio(false);
+  std::cin.tie(nullptr);
+#endif
+  int t;
+  cin >> t;
+  while (t--) {
+    run();
+  }
+  return 0;
+}
 

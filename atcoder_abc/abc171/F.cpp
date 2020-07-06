@@ -1,3 +1,7 @@
+//
+// Created by watemus on 04.07.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -34,7 +38,15 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run();
+void run() {
+
+}
+/* stuff you should look for
+	* int overflow, array bounds
+	* special cases (n=1?)
+	* do smth instead of nothing and stay organized
+	* WRITE STUFF DOWN
+*/
 
 signed main() {
 #ifdef LOCAL
@@ -50,16 +62,4 @@ signed main() {
   }
   return 0;
 }
-
-
-void run() {
-
-}
-/* stuff you should look for
-	* int overflow, array bounds
-	* special cases (n=1?)
-	* do smth instead of nothing and stay organized
-	* WRITE STUFF DOWN
-*/
-
 

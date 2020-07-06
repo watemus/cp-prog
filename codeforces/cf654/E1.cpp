@@ -1,3 +1,7 @@
+//
+// Created by watemus on 01.07.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -34,7 +38,46 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run();
+void run() {
+  int n, p;
+  cin >> n >> p;
+  vec<int> a(n);
+  for (int i = 0; i < n; i++) {
+    cin >> a[i];
+  }
+  sort(ALL(a));
+  vec<int> ans;
+  for (int x = 0; x <= 2000; x++) {
+    int ci = 0;
+    int cx = x;
+    int have = 0;
+    bool correct = true;
+    while (true) {
+      while (ci < n && a[ci] <= cx) ci++;
+      if ((ci - have) % p == 0) {
+        correct = false;
+        break;
+      }
+      have++;
+      cx++;
+      if (have == n) break;
+    }
+    if (correct) {
+      ans.push_back(x);
+    }
+  }
+  cout << ans.size() << '\n';
+  for (auto el : ans) {
+    cout << el << ' ';
+  }
+  cout << '\n';
+}
+/* stuff you should look for
+	* int overflow, array bounds
+	* special cases (n=1?)
+	* do smth instead of nothing and stay organized
+	* WRITE STUFF DOWN
+*/
 
 signed main() {
 #ifdef LOCAL
@@ -50,16 +93,4 @@ signed main() {
   }
   return 0;
 }
-
-
-void run() {
-
-}
-/* stuff you should look for
-	* int overflow, array bounds
-	* special cases (n=1?)
-	* do smth instead of nothing and stay organized
-	* WRITE STUFF DOWN
-*/
-
 

@@ -1,3 +1,7 @@
+//
+// Created by watemus on 28.06.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -13,6 +17,8 @@ using namespace std;
 
 using ll = long long;
 using ld = long double;
+
+#define int ll
 
 template<typename T>
 using vec = std::vector<T>;
@@ -34,26 +40,20 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run();
-
-signed main() {
-#ifdef LOCAL
-  std::freopen("input.txt", "r", stdin);
-#else
-  std::ios_base::sync_with_stdio(false);
-  std::cin.tie(nullptr);
-#endif
-  int t = 1;
-  //cin >> t;
-  while (t--) {
-    run();
-  }
-  return 0;
-}
-
-
 void run() {
-
+    int x, y, n;
+    cin >> x >> y >> n;
+    int r = INFI;
+    int l = 0;
+    while (l + 1 < r) {
+        int mid = (l + r) / 2;
+        if (x * mid + y <= n) {
+            l = mid;
+        } else {
+            r  = mid;
+        }
+    }
+    cout << l * x + y << '\n';
 }
 /* stuff you should look for
 	* int overflow, array bounds
@@ -62,4 +62,19 @@ void run() {
 	* WRITE STUFF DOWN
 */
 
+signed main() {
+#ifdef LOCAL
+    std::freopen("input.txt", "r", stdin);
+#else
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+#endif
+    cout << std::fixed << std::setprecision(20);
+    int t = 1;
+    cin >> t;
+    while (t--) {
+        run();
+    }
+    return 0;
+}
 

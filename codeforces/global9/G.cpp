@@ -1,3 +1,7 @@
+//
+// Created by watemus on 06.07.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -53,7 +57,28 @@ signed main() {
 
 
 void run() {
-
+  int n;
+  cin >> n;
+  vec<vec<int>> g(n);
+  for (int i = 0; i < n - 1; i++) {
+    int u, v;
+    cin >> u >> v;
+    u--, v--;
+    g[u].push_back(v);
+    g[v].push_back(u);
+  }
+  vec<int> clr(n);
+  int cnt_clr[2] = {0, 0};
+  function<void(int, int, int)> dfs = [&](int v, int p, int dep) {
+    cnt_clr[dep % 2]++;
+    for (int u : g[v]) {
+      if (u != p) {
+        dfs(u, v, dep + 1);
+      }
+    }
+  };
+  dfs(0, 0, 0);
+  cout << min(cnt_clr[0], cnt_clr[1]) - 1 << '\n';
 }
 /* stuff you should look for
 	* int overflow, array bounds

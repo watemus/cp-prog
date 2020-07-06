@@ -1,3 +1,7 @@
+//
+// Created by watemus on 28.06.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -34,26 +38,23 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run();
-
-signed main() {
-#ifdef LOCAL
-  std::freopen("input.txt", "r", stdin);
-#else
-  std::ios_base::sync_with_stdio(false);
-  std::cin.tie(nullptr);
-#endif
-  int t = 1;
-  //cin >> t;
-  while (t--) {
-    run();
-  }
-  return 0;
-}
-
-
 void run() {
-
+    int n;
+    cin >> n;
+    int cnt2 = 0, cnt3 = 0;
+    while (n % 2 == 0) {
+        n /= 2;
+        cnt2++;
+    }
+    while (n % 3 == 0) {
+        n /= 3;
+        cnt3++;
+    }
+    if (n > 1 || cnt2 > cnt3) {
+        cout <<  "-1\n";
+    } else {
+        cout << cnt3 - cnt2 + cnt3 << '\n';
+    }
 }
 /* stuff you should look for
 	* int overflow, array bounds
@@ -62,4 +63,19 @@ void run() {
 	* WRITE STUFF DOWN
 */
 
+signed main() {
+#ifdef LOCAL
+    std::freopen("input.txt", "r", stdin);
+#else
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+#endif
+    cout << std::fixed << std::setprecision(20);
+    int t = 1;
+   cin >> t;
+    while (t--) {
+        run();
+    }
+    return 0;
+}
 

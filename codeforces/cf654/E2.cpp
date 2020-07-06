@@ -1,3 +1,7 @@
+//
+// Created by watemus on 01.07.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -34,7 +38,33 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run();
+struct Event {
+  ll time;
+  ll type;
+  ll ctime;
+};
+
+
+void run() {
+  int n, p;
+  cin >> n >> p;
+  vec<ll> a(n);
+  for (int i = 0; i < n; i++) {
+    cin >> a[i];
+  }
+  sort(ALL(a));
+  ll mx = a.back();
+  for (int i = 0; i < n; i++) {
+    a[i] = max(a[i], mx - n + 1);
+  }
+
+}
+/* stuff you should look for
+	* int overflow, array bounds
+	* special cases (n=1?)
+	* do smth instead of nothing and stay organized
+	* WRITE STUFF DOWN
+*/
 
 signed main() {
 #ifdef LOCAL
@@ -50,16 +80,4 @@ signed main() {
   }
   return 0;
 }
-
-
-void run() {
-
-}
-/* stuff you should look for
-	* int overflow, array bounds
-	* special cases (n=1?)
-	* do smth instead of nothing and stay organized
-	* WRITE STUFF DOWN
-*/
-
 

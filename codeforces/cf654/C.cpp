@@ -34,7 +34,21 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run();
+void run() {
+  ll a, b, n, m;
+  cin >> a >> b >> n >> m;
+  if (a + b < n + m || m > min(a, b)) {
+    cout << "No\n";
+  } else {
+    cout << "Yes\n";
+  }
+}
+/* stuff you should look for
+	* int overflow, array bounds
+	* special cases (n=1?)
+	* do smth instead of nothing and stay organized
+	* WRITE STUFF DOWN
+*/
 
 signed main() {
 #ifdef LOCAL
@@ -44,22 +58,10 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  //cin >> t;
+  cin >> t;
   while (t--) {
     run();
   }
   return 0;
 }
-
-
-void run() {
-
-}
-/* stuff you should look for
-	* int overflow, array bounds
-	* special cases (n=1?)
-	* do smth instead of nothing and stay organized
-	* WRITE STUFF DOWN
-*/
-
 

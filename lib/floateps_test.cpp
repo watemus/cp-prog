@@ -3,7 +3,7 @@
 //
 
 #include <bits/stdc++.h>
-#include "floateps.cpp"
+#include "../lib/floateps.cpp"
 
 int main() {
     ldp a = 4;
@@ -12,5 +12,5 @@ int main() {
     a += 0.9;
     a += 0.1;
     std::cout << a << std::endl;
-    std::cout << (a == ldp(4)) << std::endl;
+    std::cout << (a == ldp(4.0001)) << std::endl;
 }

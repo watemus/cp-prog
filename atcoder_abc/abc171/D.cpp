@@ -1,3 +1,7 @@
+//
+// Created by watemus on 04.07.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -19,7 +23,6 @@ using vec = std::vector<T>;
 
 template<typename T>
 using uset = std::unordered_set<T>;
-
 template<typename T1, typename T2>
 using umap = std::unordered_map<T1, T2>;
 
@@ -34,7 +37,34 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run();
+void run() {
+  int n, q;
+  cin >> n;
+  ll sum = 0;
+  map<ll, ll> cnt;
+  for (ll i = 0; i < n; i++) {
+    int el;
+    cin >> el;
+    cnt[el]++;
+    sum += el;
+  }
+  cin >> q;
+  for (int it = 0; it < q; it++) {
+    ll b, c;
+    cin >> b >> c;
+    sum -= cnt[b] * b;
+    sum += cnt[b] * c;
+    cnt[c] += cnt[b];
+    cnt[b] = 0;
+    cout << sum << '\n';
+  }
+}
+/* stuff you should look for
+	* int overflow, array bounds
+	* special cases (n=1?)
+	* do smth instead of nothing and stay organized
+	* WRITE STUFF DOWN
+*/
 
 signed main() {
 #ifdef LOCAL
@@ -50,16 +80,4 @@ signed main() {
   }
   return 0;
 }
-
-
-void run() {
-
-}
-/* stuff you should look for
-	* int overflow, array bounds
-	* special cases (n=1?)
-	* do smth instead of nothing and stay organized
-	* WRITE STUFF DOWN
-*/
-
 

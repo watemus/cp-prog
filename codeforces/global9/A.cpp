@@ -1,3 +1,7 @@
+//
+// Created by watemus on 06.07.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -44,7 +48,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  //cin >> t;
+  cin >> t;
   while (t--) {
     run();
   }
@@ -53,7 +57,19 @@ signed main() {
 
 
 void run() {
-
+  ll n;
+  cin >> n;
+  for (int i = 0; i < n; i++) {
+    int el;
+    cin >> el;
+    if (i % 2) {
+      cout << abs(el);
+    } else {
+      cout << -abs(el);
+    }
+    cout << ' ';
+  }
+  cout << '\n';
 }
 /* stuff you should look for
 	* int overflow, array bounds
