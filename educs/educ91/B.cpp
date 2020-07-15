@@ -1,3 +1,7 @@
+//
+// Created by watemus on 12.07.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -44,7 +48,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  //cin >> t;
+  cin >> t;
   while (t--) {
     run();
   }
@@ -53,7 +57,24 @@ signed main() {
 
 
 void run() {
-
+  string s;
+  cin >> s;
+  map<char, int> cnt;
+  for (char ch : s) {
+    cnt[ch]++;
+  }
+  int mx = 0;
+  for (auto [k, v] : cnt) {
+    mx = max(mx, v);
+  }
+  char ans = 'R';
+  if (cnt['R'] == mx) ans = 'P';
+  else if (cnt['S'] == mx) ans = 'R';
+  else ans = 'S';
+  for (int i = 0; i < s.size(); i++) {
+    cout << ans;
+  }
+  cout << '\n';
 }
 
 

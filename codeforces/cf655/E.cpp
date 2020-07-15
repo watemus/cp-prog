@@ -1,3 +1,7 @@
+//
+// Created by watemus on 12.07.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -53,7 +57,39 @@ signed main() {
 
 
 void run() {
-
+  int n, m;
+  cin >> n >> m;
+  vec<vec<pair<int, int>>> segs(n + 2, vec<pair<int, int>>(m + 2));
+  for (int i = 0; i < n; i++) {
+    int k;
+    cin >> k;
+    while (k--) {
+      int lb, rb;
+      cin >> lb >> rb;
+      for (int j = lb; j <= rb; j++) {
+        segs[i][j] = {lb, rb};
+      }
+    }
+  }
+  vec<vec<ll>> dp(m + 2, vec<ll>(m + 2));
+  for (int i = m; i >= 1; i--) {
+    for (int j = i; j <= m; j++) {
+      for (int k = i; k <= j; k++) {
+        int cur = 0;
+        for (int h = 0; h < n; h++) {
+          cur += (segs[h][k].first >= i && segs[h][k].second <= j);
+        }
+        dp[i][j] = max(dp[i][j], dp[i][k - 1] + cur * cur + dp[k + 1][j]);
+      }
+    }
+  }
+  cout << dp[1][m] << '\n';
 }
+/* stuff you should look for
+	* int overflow, array bounds
+	* special cases (n=1?)
+	* do smth instead of nothing and stay organized
+	* WRITE STUFF DOWN
+*/
 
 

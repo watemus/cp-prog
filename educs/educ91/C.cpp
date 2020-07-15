@@ -1,3 +1,7 @@
+//
+// Created by watemus on 12.07.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -44,7 +48,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  //cin >> t;
+  cin >> t;
   while (t--) {
     run();
   }
@@ -53,7 +57,23 @@ signed main() {
 
 
 void run() {
-
+  ll n, x;
+  cin >> n >> x;
+  vec<ll> a(n);
+  for (int i = 0; i < n; i++) {
+    cin >> a[i];
+  }
+  sort(RALL(a));
+  ll ans = 0;
+  ll have = 0;
+  for (int i = 0; i < n; i++) {
+    have++;
+    if (have * a[i] >= x) {
+      ans++;
+      have = 0;
+    }
+  }
+  cout << ans << '\n';
 }
 
 

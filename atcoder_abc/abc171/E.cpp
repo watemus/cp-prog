@@ -39,7 +39,20 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+  ll n;
+  cin >> n;
+  vec<ll> a(n);
+  for (int i = 0; i < n; i++) {
+    cin >> a[i];
+  }
+  ll all = 0;
+  for (int i = 0; i < n; i += 2) {
+    all ^= a[i] ^ a[i + 1];
+  }
+  for (int i = 0; i < n; i++) {
+    cout << (a[i] ^ all) << ' ';
+  }
+  cout << '\n';
 }
 /* stuff you should look for
 	* int overflow, array bounds

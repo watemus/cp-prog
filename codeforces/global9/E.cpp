@@ -1,3 +1,7 @@
+//
+// Created by watemus on 06.07.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -53,7 +57,38 @@ signed main() {
 
 
 void run() {
-
+  int n;
+  cin >> n;
+  vec<pair<int, int>> a(n);
+  for (int i = 0; i < n; i++) {
+    cin >> a[i].first;
+    a[i].second = i;
+  }
+  sort(ALL(a));
+  vec<int> p(n);
+  for (int i = 0; i < n; i++) {
+    p[a[i].second] = i;
+  }
+  vec<pair<int, int>> ans;
+  for (int el = n - 1; el >= 0; el--) {
+    for (int i = 0; i < n; i++) {
+      if (p[i] == el && i != el) {
+        ans.emplace_back(i + 1, el + 1);
+        swap(p[i], p[el]);
+        break;
+      }
+    }
+  }
+  cout << ans.size() << '\n';
+  for (auto [i, j] : ans) {
+    cout << i << ' ' << j << '\n';
+  }
 }
+/* stuff you should look for
+	* int overflow, array bounds
+	* special cases (n=1?)
+	* do smth instead of nothing and stay organized
+	* WRITE STUFF DOWN
+*/
 
 

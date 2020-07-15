@@ -1,3 +1,7 @@
+//
+// Created by watemus on 11.07.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -44,7 +48,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  //cin >> t;
+  cin >> t;
   while (t--) {
     run();
   }
@@ -53,7 +57,31 @@ signed main() {
 
 
 void run() {
+  int n;
+  cin >> n;
+  vec<int> a(n);
+  for (int i = 0; i < n; i++) {
+    cin >> a[i];
+    a[i]--;
+  }
+  vec<int> c(n + 1);
+  for (int i = 0; i < n; i++) {
+    if (a[i] != i) {
+      c[i + 1] = 1;
+    }
+  }
+  int cnt = 0;
+  for (int i = 1; i < n + 1; i++) {
+    if (c[i] && !c[i - 1]) cnt++;
+  }
+  cout << min(cnt, 2) << '\n';
 
 }
+/* stuff you should look for
+	* int overflow, array bounds
+	* special cases (n=1?)
+	* do smth instead of nothing and stay organized
+	* WRITE STUFF DOWN
+*/
 
 
