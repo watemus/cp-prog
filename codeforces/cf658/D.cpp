@@ -1,3 +1,7 @@
+//
+// Created by watemus on 21.07.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -42,17 +46,17 @@ void run() {
 
 signed main() {
 #ifdef LOCAL
-  std::freopen("input.txt", "r", stdin);
+    std::freopen("input.txt", "r", stdin);
 #else
-  std::ios_base::sync_with_stdio(false);
+    std::ios_base::sync_with_stdio(false);
   std::cin.tie(nullptr);
 #endif
-  int t = 1;
-  //cin >> t;
-  while (t--) {
-    run();
-  }
-  return 0;
+    int t = 1;
+    //cin >> t;
+    while (t--) {
+        run();
+    }
+    return 0;
 }
 
 

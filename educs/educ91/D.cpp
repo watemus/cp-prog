@@ -1,7 +1,3 @@
-//
-// Created by watemus on 12.07.2020.
-//
-
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -35,29 +31,104 @@ std::mt19937 rnd(std::chrono::steady_clock::now().time_since_epoch().count());
 vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
 #ifdef LOCAL
+const int MAXN = 100;
 #else
+const int MAXN = 2e5 + 10;
 #endif
 
-void run();
+struct segtree {
+    ll t[MAXN * 4];
+    segtree() {
+        memset(t, 0, sizeof t);
+    }
+    void build(ll v, ll lb, ll rb, vec<ll> &arr) {
+        if (rb - lb == 1) {
+            t[v] = arr[lb];
+        } else {
+            ll mid = (lb + rb) / 2;
+            build(v * 2 + 1, lb, mid, arr);
+            build(v * 2 + 2, mid, rb, arr);
+            t[v] = max(t[v * 2 + 1], t[v * 2 + 2]);
+        }
+    }
+    ll get(ll v, ll lb, ll rb, ll lq, ll rq) {
+        if (lq <= lb && rb <= rq) {
+            return t[v];
+        }
+        ll ans = -INFL;
+        ll mid = (lb + rb) / 2;
+        if (lq < mid) {
+            ans = max(ans, get(v * 2 + 1, lb, mid, lq, rq));
+        }
+        if (mid < rq) {
+            ans = max(ans, get(v * 2 + 2, mid, rb, lq, rq));
+        }
+        return ans;
+    }
+};
+
+void run() {
+    ll n, m;
+    cin >> n >> m;
+    ll x, k, y;
+    cin >> x >> k >> y;
+    vec<ll> a(n + 2), b(m);
+    for (ll i = 1; i <= n; i++) {
+        cin >> a[i];
+    }
+    a[n + 1] = -INFI;
+    for (ll i = 0; i < m; i++) {
+        cin >> b[i];
+    }
+    ll ss_len = 0;
+    vec<ll> ss {0};
+    for (ll i = 1; i <= n; i++) {
+        if (ss_len < m && a[i] == b[ss_len]) {
+            ss_len++;
+            ss.push_back(i);
+        }
+    }
+    ss.push_back(n + 1);
+    if (ss_len != m) {
+        cout << "-1\n";
+        return;
+    }
+    segtree st;
+    st.build(0, 0, n + 2, a);
+    ll ans = 0;
+    for (ll i = 1; i < ss.size(); i++) {
+        ll lb = ss[i - 1];
+        ll rb = ss[i];
+        ll len = rb - lb - 1;
+        ll ans_cur = INFL;
+        if (len >= k) {
+            ans_cur = min({ans_cur, len / k * x + len % k * y, x + (len - k) * y});
+        }
+        if (st.get(0, 0, n + 2, lb + 1, rb) < max(a[lb], a[rb])) {
+            ans_cur = min(ans_cur, y * len);
+        }
+        if (ans_cur == INFL) {
+            cout << "-1\n";
+            return;
+        }
+        ans += ans_cur;
+    }
+    cout << ans << '\n';
+}
 
 signed main() {
 #ifdef LOCAL
-  std::freopen("input.txt", "r", stdin);
+    std::freopen("input.txt", "r", stdin);
 #else
-  std::ios_base::sync_with_stdio(false);
+    std::ios_base::sync_with_stdio(false);
   std::cin.tie(nullptr);
 #endif
-  int t = 1;
-  //cin >> t;
-  while (t--) {
-    run();
-  }
-  return 0;
-}
-
-
-void run() {
-
+    int t = 1;
+    //cin >> t;
+    while (t--) {
+        run();
+    }
+    return 0;
 }
 
 

@@ -1,3 +1,7 @@
+//
+// Created by watemus on 17.07.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -13,8 +17,6 @@ using namespace std;
 
 using ll = long long;
 using ld = long double;
-
-#define int ll
 
 template<typename T>
 using vec = std::vector<T>;
@@ -37,22 +39,30 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+    vec<ll> a(3);
+    for (int i = 0; i < 3; i++) cin >> a[i];
+    sort(RALL(a));
+    if (a[0] == a[1]) {
+        cout << "YES\n";
+        cout << a[0] << ' ' << a[2] << ' ' << a[2] << '\n';
+    } else {
+        cout << "NO\n";
+    }
 }
 
 signed main() {
 #ifdef LOCAL
-  std::freopen("input.txt", "r", stdin);
+    std::freopen("input.txt", "r", stdin);
 #else
-  std::ios_base::sync_with_stdio(false);
+    std::ios_base::sync_with_stdio(false);
   std::cin.tie(nullptr);
 #endif
-  int t = 1;
-  //cin >> t;
-  while (t--) {
-    run();
-  }
-  return 0;
+    int t = 1;
+    cin >> t;
+    while (t--) {
+        run();
+    }
+    return 0;
 }
 
 
