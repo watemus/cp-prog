@@ -1,3 +1,7 @@
+//
+// Created by watemus on 30.08.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -28,12 +32,7 @@ using umap = std::unordered_map<T1, T2>;
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
 const ld PI = acos(-1);
-
-#ifdef LOCAL
-std::mt19937 rnd(228);
-#else
 std::mt19937 rnd(std::chrono::steady_clock::now().time_since_epoch().count());
-#endif
 
 vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
@@ -49,7 +48,7 @@ auto Vec(size_t n, Args&&... args) {
 #else
 #endif
 
-[[noreturn]] void run() {
+void run() {
 
 }
 
@@ -61,7 +60,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  // cin >> t;
+  //cin >> t;
   while (t--) {
     run();
   }

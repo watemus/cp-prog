@@ -1,3 +1,7 @@
+//
+// Created by watemus on 30.08.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -28,12 +32,7 @@ using umap = std::unordered_map<T1, T2>;
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
 const ld PI = acos(-1);
-
-#ifdef LOCAL
-std::mt19937 rnd(228);
-#else
 std::mt19937 rnd(std::chrono::steady_clock::now().time_since_epoch().count());
-#endif
 
 vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
@@ -49,8 +48,44 @@ auto Vec(size_t n, Args&&... args) {
 #else
 #endif
 
-[[noreturn]] void run() {
+void run() {
+  int n;
+  cin >> n;
+  vec<int> a(n), b(n), z(n);
+  for (int i = 0; i < n; i++) {
+    cin >> a[i];
+    int aa =abs(a[i]);
+    z[i] = n - (aa % n + n) % n;
+    b[i] = aa / n + 1 - z[i];
+  }
+  if (n == 1) {
+    cout << "1 1\n1\n1 1\n1\n";
+    cout << "1 1\n";
+    cout << -a[0] - 2 << '\n';
+    return;
+  }
+  cout << "1 " << n << '\n';
+  for (int i = 0; i < n; i++) {
+    if (a[i] > 0) {
+      cout << -n * b[i] << ' ';
+      a[i] -= n * b[i];
+    } else {
+      cout << n * b[i] << ' ';
+      a[i] += n * b[i];
+    }
+  }
+  cout << '\n';
+  cout << "2 " << n << '\n';
+  for (int i = 1; i < n; i++) {
+    if (a[i] > 0) {
+      cout << -z[i] * (n - 1) << ' ';
+    }else {
+      cout << z[i] * (n - 1) << ' ';
 
+    }
+  }
+  cout << "\n1 1\n";
+  cout << -a[0] << '\n';
 }
 
 signed main() {
@@ -61,7 +96,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  // cin >> t;
+  // >> t;
   while (t--) {
     run();
   }

@@ -1,3 +1,7 @@
+//
+// Created by watemus on 16.08.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -28,29 +32,38 @@ using umap = std::unordered_map<T1, T2>;
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
 const ld PI = acos(-1);
-
-#ifdef LOCAL
-std::mt19937 rnd(228);
-#else
 std::mt19937 rnd(std::chrono::steady_clock::now().time_since_epoch().count());
-#endif
 
 vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
-template<class... Args>
-auto Vec(size_t n, Args&&... args) {
-  if constexpr(sizeof...(args) == 1)
-    return vector(n, args...);
-  else
-    return vector(n, Vec(args...));
-}
-
 #ifdef LOCAL
 #else
 #endif
 
-[[noreturn]] void run() {
-
+void run() {
+  int n, k;
+  cin >> n >> k;
+  vec<int> a(n);
+  int mx = 0;
+  for (int i = 00; i < n; i++) {
+    cin >> a[i];
+    mx =max(a[i], mx);
+  }
+  if (k % 2) {
+    for (int i = 0; i < n; i++) {
+      cout << mx - a[i] << ' ';
+    }
+  } else {
+    int nmx = 0;
+    for (int i = 0; i < n; i++) {
+      a[i] = mx - a[i];
+      nmx = max(a[i], nmx);
+    }
+    for (int i = 0; i < n; i++) {
+      cout << nmx - a[i] << ' ';
+    }
+  }
+  cout << '\n';
 }
 
 signed main() {
@@ -61,7 +74,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  // cin >> t;
+  cin >> t;
   while (t--) {
     run();
   }

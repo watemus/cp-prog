@@ -1,3 +1,7 @@
+//
+// Created by watemus on 29.07.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -28,29 +32,25 @@ using umap = std::unordered_map<T1, T2>;
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
 const ld PI = acos(-1);
-
-#ifdef LOCAL
-std::mt19937 rnd(228);
-#else
 std::mt19937 rnd(std::chrono::steady_clock::now().time_since_epoch().count());
-#endif
 
 vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
-template<class... Args>
-auto Vec(size_t n, Args&&... args) {
-  if constexpr(sizeof...(args) == 1)
-    return vector(n, args...);
-  else
-    return vector(n, Vec(args...));
-}
-
 #ifdef LOCAL
 #else
 #endif
 
-[[noreturn]] void run() {
-
+void run() {
+  int m, d, w;
+  cin >> m >> d >> w;
+  int rb = min(m, d);
+  int g = gcd(d - 1, w);
+  w /= g;
+  int cnt = rb / w;
+  int rem = rb % w;
+  int ans = (cnt * (cnt - 1)) / 2 * w;
+  ans += rem * cnt;
+  cout << ans << '\n';
 }
 
 signed main() {
@@ -61,7 +61,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  // cin >> t;
+  cin >> t;
   while (t--) {
     run();
   }

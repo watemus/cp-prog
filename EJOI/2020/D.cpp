@@ -1,0 +1,142 @@
+//
+// Created by watemus on 07.09.2020.
+//
+
+#ifdef LOCAL
+#define _GLIBCXX_DEBUG
+#endif
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define ALL(a) a.begin(), a.end()
+#define RALL(a) a.rbegin(), a.rend()
+#define FF first
+#define SS second
+
+using ll = long long;
+using ld = long double;
+
+#define int ll
+
+template<typename T>
+using vec = std::vector<T>;
+
+template<typename T>
+using uset = std::unordered_set<T>;
+
+template<typename T1, typename T2>
+using umap = std::unordered_map<T1, T2>;
+
+constexpr ll INFL = 1000000000000000228;
+constexpr int INFI = 1000000228;
+const ld PI = acos(-1);
+
+#ifdef LOCAL
+std::mt19937 rnd(228);
+#else
+std::mt19937 rnd(std::chrono::steady_clock::now().time_since_epoch().count());
+#endif
+
+vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+/*
+template<class... Args>
+auto Vec(size_t n, Args&&... args) {
+  if constexpr(sizeof...(args) == 1)
+    return vector(n, args...);
+  else
+    return vector(n, Vec(args...));
+}
+*/
+#ifdef LOCAL
+#else
+#endif
+
+void run() {
+  int n, s;
+  cin >> n >> s;
+  vec<int> a(n);
+  for (int i = 0; i < n; i++) {
+    cin >> a[i];
+  }
+  if (s == 1) {
+    vec<pair<int, int>> ans;
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n - 1; j++) {
+        if (a[j] > a[j + 1]) {
+          ans.emplace_back(j, j + 1);
+          ans.emplace_back(j + 1, j);
+          ans.emplace_back(j, j + 1);
+          swap(a[j], a[j + 1]);
+        }
+      }
+      for (int j = n - 2; j >= 0; j--) {
+        if (a[j] > a[j + 1]) {
+          ans.emplace_back(j, j + 1);
+          ans.emplace_back(j + 1, j);
+          ans.emplace_back(j, j + 1);
+          swap(a[j], a[j + 1]);
+        }
+      }
+    }
+    cout << ans.size() << '\n';
+    for (auto xy : ans) {
+      auto x = xy.first;
+      auto y = xy.second;
+      cout << x + 1 << ' ' << y + 1 << '\n';
+    }
+  } else {
+    vec<pair<int, int>> ans;
+    for (int pw = 20; pw >= 0; pw--) {
+      vec<int> cr;
+      for (int i = 0; i < n; i++) {
+        if (a[i] & (1 << pw)) {
+          cr.push_back(i);
+        }
+      }
+      reverse(ALL(cr));
+      while (cr.size() && cr.back() < n - 1) {
+        if (cr.size() > 1 && cr.back() + 1 == cr[cr.size() - 2]) {
+          cr.pop_back();
+          ans.emplace_back(cr.back() - 1, cr.back());
+          a[cr.back() - 1] ^= a[cr.back()];
+        } else {
+          ans.emplace_back(cr.back() + 1, cr.back());
+          a[cr.back() + 1] ^= a[cr.back()];
+          ans.emplace_back(cr.back(), cr.back() + 1);
+          a[cr.back()] ^= a[cr.back() + 1];
+          cr.back()++;
+        }/*
+        for (int i = 0; i < a.size(); i++) {
+          cout << a[i] << ' ';
+        }
+        cout << '\n';*/
+      }
+      if (cr.size()) {
+        n--;
+      }
+    }
+    cout << ans.size() << '\n';
+    for (auto xx : ans) {
+      cout << xx.first + 1 << ' ' << xx.second + 1 << '\n';
+    }
+  }
+}
+
+signed main() {
+#ifdef LOCAL
+  std::freopen("input.txt", "r", stdin);
+#else
+  std::ios_base::sync_with_stdio(false);
+  std::cin.tie(nullptr);
+#endif
+  int t = 1;
+  //cin >> t;
+  while (t--) {
+    run();
+  }
+  return 0;
+}
+
+

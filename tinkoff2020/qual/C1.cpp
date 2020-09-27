@@ -1,3 +1,7 @@
+//
+// Created by watemus on 05.09.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -49,8 +53,27 @@ auto Vec(size_t n, Args&&... args) {
 #else
 #endif
 
-[[noreturn]] void run() {
-
+void run() {
+  int n;
+  cin >> n;
+  string s;
+  cin >> s;
+  int cnt_r = 0;
+  vec<int> ws;
+  for (int i = 0; i < n; i++) {
+    if (s[i] == 'R') {
+      cnt_r++;
+    } else {
+      ws.push_back(i);
+    }
+  }
+  int ans = 0;
+  for (int i : ws) {
+    if (i < cnt_r) {
+      ans++;
+    }
+  }
+  cout << ans << '\n';
 }
 
 signed main() {
@@ -61,7 +84,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  // cin >> t;
+  //cin >> t;
   while (t--) {
     run();
   }

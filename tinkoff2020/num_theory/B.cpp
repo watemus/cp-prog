@@ -1,3 +1,7 @@
+//
+// Created by watemus on 27.09.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -49,8 +53,61 @@ auto Vec(size_t n, Args&&... args) {
 #else
 #endif
 
-[[noreturn]] void run() {
+const int MAXN = 1e6 + 10;
+const int MOD = 1e9 + 7;
 
+int cnt[MAXN], d[MAXN], ans[MAXN];
+
+int add(int a, int b) {
+  return (a + b) % MOD;
+}
+
+int sub(int a, int b) {
+  return (a - b + MOD) % MOD;
+}
+
+int mul(int a, int b) {
+  return (a * b) % MOD;
+}
+
+int pw(int a, int b) {
+  int ans = 1;
+  while (b) {
+    if (b & 1) {
+      ans *= a;
+      ans %= MOD;
+    }
+    a *= a;
+    a %= MOD;
+    b >>= 1;
+  }
+  return ans;
+}
+
+void run() {
+  int n;
+  cin >> n;
+  for (int i = 0; i < n; i++) {
+    int el;
+    cin >> el;
+    cnt[el]++;
+  }
+  for (int i = 1; i < MAXN; i++) {
+    for (int j = i; j < MAXN; j += i) {
+      d[i] += cnt[j];
+    }
+  }
+  int cans = 0;
+  for (int i = MAXN - 1; i >= 2; i--) {
+    if (d[i] > 0) {
+      ans[i] = mul(d[i], pw(2, d[i] - 1));
+      for (int j = i + i; j < MAXN; j += i) {
+        ans[i] = sub(ans[i], ans[j]);
+      }
+      cans = add(cans, mul(i, ans[i]));
+    }
+  }
+  cout << cans << '\n';
 }
 
 signed main() {

@@ -1,3 +1,7 @@
+//
+// Created by watemus on 30.07.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -28,29 +32,50 @@ using umap = std::unordered_map<T1, T2>;
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
 const ld PI = acos(-1);
-
-#ifdef LOCAL
-std::mt19937 rnd(228);
-#else
 std::mt19937 rnd(std::chrono::steady_clock::now().time_since_epoch().count());
-#endif
 
 vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
-template<class... Args>
-auto Vec(size_t n, Args&&... args) {
-  if constexpr(sizeof...(args) == 1)
-    return vector(n, args...);
-  else
-    return vector(n, Vec(args...));
-}
-
 #ifdef LOCAL
 #else
 #endif
 
-[[noreturn]] void run() {
+struct Segment {
+  int l, r, t;
+};
 
+void run() {
+  int n;
+  cin >> n;
+  vec<Segment> segments(n);
+  for (auto &[l, r, t] : segments) {
+    int tl, tr;
+    cin >> tl >> tr >> t;
+    if (t == 1) {
+      l = tl;
+      r = -tr;
+    } else {
+      l = tr;
+      r = -tl;
+    }
+  }
+  sort(ALL(segments), [](const auto &a, const auto &b){
+    return tie(a.l, a.t, a.r) < tie(b.l, b.t, b.r);
+  });
+  multiset<int> rs;
+  int matching_size = 0;
+  for (auto [l, r, t] : segments) {
+    if (t == 2) {
+      auto it = rs.upper_bound(r);
+      if (it != rs.begin()) {
+        rs.erase(prev(it));
+        matching_size++;
+      }
+    } else {
+      rs.insert(r);
+    }
+  }
+  cout << n - matching_size << '\n';
 }
 
 signed main() {
@@ -61,11 +86,10 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  // cin >> t;
+  //cin >> t;
   while (t--) {
     run();
   }
   return 0;
 }
-
 

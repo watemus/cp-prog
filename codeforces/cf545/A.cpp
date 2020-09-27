@@ -1,3 +1,7 @@
+//
+// Created by watemus on 02.08.2020.
+//
+
 /*
  %=%=%+*++%=%@@###@###@@%%%%======++++++=======%%%%====%%%%%%@@@@@@@%%@@%=*--:+%@###########%%%@@+=#######@##
 %%+%++%=%%=@@##@#@#@#@@@@%%%%======+======+============%%%%%@@@@@@@####@@%%=%@##########@##*@=%@==@####@##@@
@@ -92,86 +96,36 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-struct Segment_tree {
-  vec<int> t;
-  int n;
-  explicit Segment_tree(int n) : n(n), t(n * 4) {}
-  void modify(int v, int lb, int rb, int at, int val) {
-    if (rb - lb == 1) {
-      t[v] += val;
-    } else {
-      int mid = (lb + rb) / 2;
-      if (at < mid) {
-        modify(v * 2 + 1, lb, mid, at, val);
-      } else {
-        modify(v * 2 + 2, mid, rb, at, val);
-      }
-      t[v] = max(t[v * 2 + 1], t[v * 2 + 2]);
-    }
-  }
-  int get(int v, int lb, int rb) {
-    if (rb - lb == 1) {
-      return lb;
-    } else {
-      int mid = (lb + rb) / 2;
-      if (t[v * 2 + 1] == t[v]) {
-        return get(v * 2 + 1, lb, mid);
-      } else {
-        return get(v * 2 + 2, mid, rb);
-      }
-    }
-  }
-};
-
 void run() {
-  int n, k;
-  cin >> n >> k;
-
-  vec<set<int>> g(n), leaves(n);
-  for (int i = 0; i < n - 1; i++) {
-    int u, v;
-    cin >> u >> v;
-    u--, v--;
-    g[u].insert(v);
-    g[v].insert(u);
-  }
-  if (k == 1) {
-    cout << n - 1 << '\n';
-    return;
-  }
-  Segment_tree t(n);
-  for (int u = 0; u < n; u++) {
-    for (auto v : g[u]) {
-      if (g[v].size() + leaves[v].size() == 1) {
-        leaves[u].insert(v);
-        t.modify(0, 0, n, u, 1);
-      }
-    }
-    for (auto v : leaves[u]) {
-      g[u].erase(v);
+  int n, m;
+  cin >> n >> m;
+  vec<vec<int>> a(n, vec<int>(m));
+  vec<vec<int>> rows(n), cols(m);
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < m; j++) {
+      cin >> a[i][j];
+      rows[i].push_back(a[i][j]);
+      cols[j].push_back(a[i][j]);
     }
   }
-  int ans = 0;
-  while (true) {
-    int u = t.get(0, 0, n);
-    if (leaves[u].size() < k)
-      break;
-    int iters = leaves[u].size() / k;
-    while (iters--) {
-      ans++;
-      for (int i = 0; i < k; i++) {
-        leaves[u].erase(leaves[u].begin());
-        t.modify(0, 0, n, u, -1);
-      }
-    }
-    if (g[u].size() == 1 && leaves[u].empty()) {
-      int v = *g[u].begin();
-      g[v].erase(u);
-      leaves[v].insert(u);
-      t.modify(0, 0, n, v, 1);
-    }
+  for (int i = 0; i < n; i++) {
+    sort(ALL(rows[i]));
+    rows[i].resize(unique(ALL(rows[i])) - rows[i].begin());
   }
-  cout << ans << '\n';
+  for (int i = 0; i < m; i++) {
+    sort(ALL(cols[i]));
+    cols[i].resize(unique(ALL(cols[i])) - cols[i].begin());
+  }
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < m; j++) {
+      int cnt_lower_rows = lower_bound(ALL(rows[i]), a[i][j]) - rows[i].begin();
+      int cnt_lower_cols = lower_bound(ALL(cols[j]), a[i][j]) - cols[j].begin();
+      int cnt_upper_rows = rows[i].end() - upper_bound(ALL(rows[i]), a[i][j]);
+      int cnt_upper_cols = cols[j].end() - upper_bound(ALL(cols[j]), a[i][j]);
+      cout << max(cnt_lower_cols, cnt_lower_rows) + max(cnt_upper_rows, cnt_upper_cols) + 1 << ' ';
+    }
+    cout << '\n';
+  }
 }
 
 signed main() {
@@ -182,7 +136,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  cin >> t;
+  //cin >> t;
   while (t--) {
     run();
   }

@@ -1,3 +1,7 @@
+//
+// Created by watemus on 19.09.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -49,8 +53,33 @@ auto Vec(size_t n, Args&&... args) {
 #else
 #endif
 
-[[noreturn]] void run() {
-
+void run() {
+  int n;
+  cin >> n;
+  vec<int> a(n);
+  for (int i = 0; i < n; i++) {
+    cin >> a[i];
+  }
+  sort(ALL(a));
+  int j = 0;
+  vec<int> ans(n);
+  for (int i = 1; i < n; i += 2) {
+    ans[i] = a[j++];
+  }
+  for (int i = 0; i < n; i += 2) {
+    ans[i] = a[j++];
+  }
+  int ansik = 0;
+  for (int i = 1; i < n - 1; i++) {
+    if (ans[i] < ans[i - 1] && ans[i] < ans[i + 1]) {
+      ansik++;
+    }
+  }
+  cout << ansik << '\n';
+  for (int i = 0; i < n; i++) {
+    cout << ans[i] << ' ';
+  }
+  cout << '\n';
 }
 
 signed main() {
@@ -61,7 +90,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  // cin >> t;
+  //cin >> t;
   while (t--) {
     run();
   }

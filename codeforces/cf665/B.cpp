@@ -1,3 +1,7 @@
+//
+// Created by watemus on 21.08.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -28,29 +32,48 @@ using umap = std::unordered_map<T1, T2>;
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
 const ld PI = acos(-1);
-
-#ifdef LOCAL
-std::mt19937 rnd(228);
-#else
 std::mt19937 rnd(std::chrono::steady_clock::now().time_since_epoch().count());
-#endif
 
 vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
-template<class... Args>
-auto Vec(size_t n, Args&&... args) {
-  if constexpr(sizeof...(args) == 1)
-    return vector(n, args...);
-  else
-    return vector(n, Vec(args...));
-}
-
 #ifdef LOCAL
 #else
 #endif
 
-[[noreturn]] void run() {
-
+void run() {
+  int x1, y1, z1, x2, y2,z2;
+  cin >> x1 >> y1 >> z1 >> x2 >> y2 >> z2;
+  int ans = 0, mn;
+  mn = min(z1, y2);
+  ans += 2 * mn;
+  z1 -= mn;
+  y2 -= mn;
+  mn = min(y1, x2);
+  y1 -= mn;
+  x2 -= mn;
+  mn = min(z1, x2);
+  z1 -= mn;
+  x2 -= mn;
+  mn = min(z2, z1);
+  z2 -= mn;
+  z1 -= mn;
+  mn = min(x1, z2);
+  x1 -= mn;
+  z2 -= mn;
+  mn = min(x1, x2);
+  x1 -= mn;
+  x2 -= mn;
+  mn = min(y1, y2);
+  y1 -= mn;
+  y2 -= mn;
+  mn = min(x1, y2);
+  x1 -= mn;
+  y2 -= mn;
+  mn = min(y1, z2);
+  ans -= 2 * mn;
+  z2 -= mn;
+  y1 -= mn;
+  cout << ans << '\n';
 }
 
 signed main() {
@@ -61,7 +84,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  // cin >> t;
+  cin >> t;
   while (t--) {
     run();
   }

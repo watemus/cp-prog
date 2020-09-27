@@ -54,11 +54,6 @@
 @==%==%%==%@@%==%%%=%==+%@@@@%@@@@++**::::::::::::::::::::::::::::::---.      .... .           ..--.---..-::
 %%%==@=++=%%@@@@%%=+::--:*%%%%@%=%%=::*******::::::::::::::--:::::::::..................             . . ...
  */
-
-//
-// Created by watemus on 21.07.2020.
-//
-
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -93,9 +88,13 @@ std::mt19937 rnd(std::chrono::steady_clock::now().time_since_epoch().count());
 
 vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
-constexpr long double EPS = 1e-5;
+#ifdef LOCAL
+#else
+#endif
 
-using FET = double;
+constexpr long double EPS = 1e-8;
+
+using FET = ld;
 
 struct FloatEps {
   FET val;
@@ -183,7 +182,7 @@ using ldp = FloatEps;
 struct Pt {
   ldp x, y;
   Pt(ldp xx, ldp yy)
-  : x(xx), y(yy)
+      : x(xx), y(yy)
   {}
   Pt() : Pt(ldp(0), ldp(0)) {}
 };
@@ -213,7 +212,7 @@ struct Seg {
 struct Line {
   ldp A, B, C;
   Line(ldp a, ldp b, ldp c)
-  : A(a), B(b), C(c) {}
+      : A(a), B(b), C(c) {}
   Line() : Line(ldp(0), ldp(0), ldp(0)) {}
   explicit Line(Seg s) {
     A = s.p.y - s.q.y;
@@ -247,211 +246,59 @@ bool is_inter(Line ln, Seg s) {
   return pon(s, p);
 }
 
-struct Event {
-  // Vertical line
-  bool vert;
-  int x;
-  int id;
-  // Segment
-  ldp x1, x2;
-  ldp xs, xf;
-  ldp k;
-  ldp b;
-  ldp coef;
-  bool end;
-  ldp integral(ldp xx) {
-    return k * xx * xx / ldp(2) + b * xx;
-  }
-  ldp calc_area() {
-    ldp xx1 = integral(x1);
-    ldp xx2 = integral(x2);
-    xx1 -= xx2;
-    return xx1 * coef;
-  }
-  Event(bool vert) : vert(vert), end(false) {}
-};
-
-const int MAXN = 1e5 + 10;
-
 void run() {
-  int n, q;
-  cin >> n >> q;
-  vec<Pt> poly(n);
-  vector<int> ys;
-  int mny = INFI, mxy = -INFI;
-  int mnx = INFI;
+  int n;
+  cin >> n;
+  vec<pair<Pt, Pt>> pts(n);
   for (int i = 0; i < n; i++) {
-    int x, y;
-    cin >> x >> y;
-    mny = min(y, mny);
-    mxy = max(y, mxy);
-    mnx = min(x, mnx);
-    ys.push_back(y);
-    poly[i] = Pt(ldp(x), ldp(y));
+    int x1, x2, y;
+    cin >> x1 >> x2 >> y;
+    pts[i].first = Pt(ldp(x1), ldp(y));
+    pts[i].second = Pt(ldp(x2), ldp(y));
   }
+  vec<pair<ldp, int>> sweep_line(5);
   for (int i = 0; i < n; i++) {
-    poly[i].x.val -= mnx;
-    poly[i].y.val -= mny;
-    ys[i] -= mny;
-  }
-  sort(ALL(ys));
-  ys.resize(unique(ALL(ys)) - ys.begin());
-  vec<Pt> left, right;
-  // Making left and right hulls
-  {
-    bool found = false;
-    vec<Pt> *cur = &right;
-    int i = 0;
-    while (left.size() + right.size() <= n) {
-      if (int(poly[i].y.val) == 0) {
-        found = true;
+    for (int j = 0; j < n; j++) {
+      if (i != j && pts[i].first.y > pts[j].first.y && pts[i].first.x <= pts[j].second.x) {
+        ldp angle1(max((ld)0.0, -atan2(pts[i].second * pts[j].first, pts[i].second % pts[i].first)));
+        ldp angle2(fabs(atan2(pts[i].first * pts[j].second, pts[i].first % pts[j].second)));
+        sweep_line.emplace_back(angle1, 1);
+        sweep_line.emplace_back(angle2, -1);
       }
-      if (found) {
-        cur->push_back(poly[i]);
-      }
-      if (found && int(poly[i].y.val) == mxy - mny) {
-        cur = &left;
-        cur->push_back(poly[i]);
-      }
-      i++;
-      i %= n;
     }
-    left.push_back(right.front());
-    if ((right[right.size() - 2] - right[right.size() - 1]) * (left[0] - left[1]) < ldp(0)) {
-      swap(left, right);
-      reverse(ALL(left));
-      reverse(ALL(right));
+  }
+  sort(ALL(sweep_line), [](const auto &a, const auto &b){
+    if (a.first == b.first) {
+      return a.second > b.second;
     }
-    reverse(ALL(left));
-  }
-  // Dividing segments
-  auto divide = [&](vec<Pt> &p) {
-    vec<Pt> new_p;
-    new_p.push_back(p[0]);
-    for (int i = 0; i < p.size() - 1; i++) {
-      int beg_y = p[i].y.val;
-      int nd_y = p[i + 1].y.val;
-      for (auto it = upper_bound(ALL(ys), beg_y); it != ys.end() && *it < nd_y; it++) {
-        Line ln(Seg(Pt(ldp(0), ldp(*it)), Pt(ldp(1), ldp(*it))));
-        new_p.push_back(inter(ln, Line(Seg(p[i], p[i + 1]))));
-      }
-      new_p.push_back(p[i + 1]);
-    }
-    return new_p;
-  };
-  left = divide(left);
-  right = divide(right);
-  // Making midline
-  assert(left.size() == right.size());
-  vec<Pt> midline;
-  for (int i = 0; i < left.size(); i++) {
-    midline.emplace_back((left[i].x + right[i].x) / ldp(2), left[i].y);
-  }
-  // Making 2 polygons
-  vec<Pt> minus = midline, plus = right;
-  for (int i = midline.size() - 2; i >= 1; i--) {
-    minus.push_back(left[i]);
-    plus.push_back(midline[i]);
-  }
-  // Making sweep line
-  vec<Event> sweep_line;
-  auto add_vert = [&](int x, int id) {
-    sweep_line.push_back(Event(true));
-    sweep_line.back().x = x;
-    sweep_line.back().id = id;
-  };
-  for (int i = 0; i < q; i++) {
-    int x;
-    cin >> x;
-    x -= mnx;
-    add_vert(x, i);
-  }
-  auto add_seg = [&](Seg s, ldp coef) {
-    auto [k, b] = Line(s).norm();
-    sweep_line.push_back(Event(false));
-    sweep_line.back().x1 = s.p.x;
-    sweep_line.back().x2 = s.q.x;
-    sweep_line.back().xs = min(s.p.x, s.q.x);
-    sweep_line.back().xf = max(s.p.x, s.q.x);
-    sweep_line.back().k = k;
-    sweep_line.back().b = b;
-    sweep_line.back().coef = coef;
-    sweep_line.back().end = false;
-    sweep_line.push_back(Event(false));
-    sweep_line.back().x1 = s.p.x;
-    sweep_line.back().x2 = s.q.x;
-    sweep_line.back().xs = min(s.p.x, s.q.x);
-    sweep_line.back().xf = max(s.p.x, s.q.x);
-    sweep_line.back().k = k;
-    sweep_line.back().b = b;
-    sweep_line.back().coef = coef;
-    sweep_line.back().end = true;
-  };
-  ldp total_area = ldp(0);
-  for (int i = 0; i < minus.size() - 1; i++) {
-    add_seg(Seg(minus[i], minus[i + 1]), ldp(-1));
-    total_area += minus[i] * minus[i + 1];
-  }
-  total_area += minus.back() * minus.front();
-  add_seg(Seg(minus.back(), minus.front()), ldp(-1));
-  for (int i = 0; i < plus.size() - 1; i++) {
-    add_seg(Seg(plus[i], plus[i + 1]), ldp(1));
-    total_area += plus[i] * plus[i + 1];
-  }
-  total_area += plus.back() * plus.front();
-  add_seg(Seg(plus.back(), plus.front()), ldp(1));
-  total_area /= ldp(2);
-  vec<ldp> ans(q);
-  ldp area = total_area;
-  ldp sum_k, sum_b;
-  ldp left_rm;
-  sort(ALL(sweep_line), [](const auto &ev1, const auto &ev2) {
-    ldp x1 = (ev1.vert ? ldp(ev1.x) : (!ev1.end ? ev1.xs : ev1.xf));
-    ldp x2 = (ev2.vert ? ldp(ev2.x) : (!ev2.end ? ev2.xs : ev2.xf));
-    if (ev1.vert && ev2.vert) {
-      return ev1.x < ev2.x;
-    }
-    if (ev1.vert && x1 == x2) {
-      return false;
-    }
-    if (ev2.vert && x1 == x2) {
-      return true;
-    }
-    return x1 < x2;
+    return a.first < b.first;
   });
-  for (auto ev : sweep_line) {
-    if (ev.vert) {
-      ans[ev.id] = area;
-      ans[ev.id] += (sum_k * ldp(ev.x * ev.x)) / ldp(2) + sum_b * ldp(ev.x);
-      ans[ev.id] -= left_rm;
-    } else {
-      if (!ev.end) {
-        if (ev.x1 > ev.x2) {
-          sum_k += ev.k * ev.coef;
-          sum_b += ev.b * ev.coef;
-          left_rm += ((ev.k * ldp(ev.xs * ev.xs)) / ldp(2) + ev.b * ldp(ev.xs)) * ev.coef;
-        } else {
-          sum_k -= ev.k * ev.coef;
-          sum_b -= ev.b * ev.coef;
-          left_rm -= ((ev.k * ldp(ev.xs * ev.xs)) / ldp(2) + ev.b * ldp(ev.xs)) * ev.coef;
-        }
-      } else {
-        area += ev.calc_area();
-        if (ev.x1 > ev.x2) {
-          sum_k -= ev.k * ev.coef;
-          sum_b -= ev.b * ev.coef;
-          left_rm -= ((ev.k * ldp(ev.xs * ev.xs)) / ldp(2) + ev.b * ldp(ev.xs)) * ev.coef;
-        } else {
-          sum_k += ev.k * ev.coef;
-          sum_b += ev.b * ev.coef;
-          left_rm += ((ev.k * ldp(ev.xs * ev.xs)) / ldp(2) + ev.b * ldp(ev.xs)) * ev.coef;
-        }
-      }
+  if (sweep_line.empty() || sweep_line[0].first > ldp(0)) {
+    cout << ld(0) << '\n';
+    return;
+  }
+  ldp ans;
+  int cr = 0;
+  for (auto [angle, dt] : sweep_line) {
+    cr += dt;
+    if (cr == 0) {
+      ans = angle;
+      break;
     }
   }
-  for (auto el : ans) {
-    cout << el.val << '\n';
+  Line ln(Seg(Pt(ldp(0), ldp(0)), Pt(ldp(1), ldp(0))));
+  Pt nrm(ldp(0), ldp(-1));
+  Pt nw;
+  nw.x = nrm.x * ldp(cos(ans)) - nrm.y * ldp(sin(ans));
+  nw.y = nrm.x * ldp(sin(ans)) + nrm.y * ldp(cos(ans));
+  ldp max_x(INFL), max_x2;
+  for (int i = 0; i < n; i++) {
+    auto itt = inter(Line(Seg(pts[i].second, pts[i].second + nw)), ln);
+    max_x2 = max(itt.x, max_x2);
+    auto itt2 = inter(Line(Seg(pts[i].first, pts[i].first + nw)), ln);
+    max_x = min(max_x, itt2.x);
   }
+  cout << fabs((max_x2 - max_x).val) << '\n';
 }
 
 signed main() {

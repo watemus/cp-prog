@@ -1,3 +1,7 @@
+//
+// Created by watemus on 01.08.2020.
+//
+
 /*
  %=%=%+*++%=%@@###@###@@%%%%======++++++=======%%%%====%%%%%%@@@@@@@%%@@%=*--:+%@###########%%%@@+=#######@##
 %%+%++%=%%=@@##@#@#@#@@@@%%%%======+======+============%%%%%@@@@@@@####@@%%=%@##########@##*@=%@==@####@##@@
@@ -92,86 +96,74 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-struct Segment_tree {
-  vec<int> t;
-  int n;
-  explicit Segment_tree(int n) : n(n), t(n * 4) {}
-  void modify(int v, int lb, int rb, int at, int val) {
-    if (rb - lb == 1) {
-      t[v] += val;
-    } else {
-      int mid = (lb + rb) / 2;
-      if (at < mid) {
-        modify(v * 2 + 1, lb, mid, at, val);
-      } else {
-        modify(v * 2 + 2, mid, rb, at, val);
-      }
-      t[v] = max(t[v * 2 + 1], t[v * 2 + 2]);
-    }
+class Segment_tree {
+public:
+  explicit Segment_tree(int n)
+  : n(n), mx(n * 4), agn(n * 4)
+  {}
+  int get() {
+    return mx[0];
   }
-  int get(int v, int lb, int rb) {
-    if (rb - lb == 1) {
-      return lb;
+  void modify(int lq, int rq, int val) {
+    _modify(0, 0, n, lq, rq, val);
+  }
+private:
+  vec<int> mx, agn;
+  int n;
+  inline void _push(int v, int lb, int rb) {
+    mx[v] += agn[v];
+    if (rb - lb > 1) {
+      agn[v * 2 + 1] += agn[v];
+      agn[v * 2 + 2] += agn[v];
+    }
+    agn[v] = 0;
+  }
+  void _modify(int v, int lb, int rb, int lq, int rq, int val) {
+    _push(v, lb, rb);
+    if (lq <= lb && rb <= rq) {
+      agn[v] += val;
     } else {
       int mid = (lb + rb) / 2;
-      if (t[v * 2 + 1] == t[v]) {
-        return get(v * 2 + 1, lb, mid);
-      } else {
-        return get(v * 2 + 2, mid, rb);
-      }
+      if (lq < mid)
+        _modify(v * 2 + 1, lb, mid, lq, rq, val);
+      if (mid < rq)
+        _modify(v * 2 + 2, mid, rb, lq, rq, val);
+      mx[v] = max(mx[v * 2 + 1] + agn[v * 2 + 1], mx[v * 2 + 2] + agn[v * 2 + 2]);
     }
+    _push(v, lb, rb);
   }
 };
 
 void run() {
-  int n, k;
-  cin >> n >> k;
-
-  vec<set<int>> g(n), leaves(n);
-  for (int i = 0; i < n - 1; i++) {
-    int u, v;
-    cin >> u >> v;
-    u--, v--;
-    g[u].insert(v);
-    g[v].insert(u);
-  }
-  if (k == 1) {
-    cout << n - 1 << '\n';
-    return;
+  int n;
+  cin >> n;
+  vec<int> p(n), rev_p(n);
+  for (int i = 0; i < n; i++) {
+    cin >> p[i];
+    rev_p[p[i] - 1] = i;
   }
   Segment_tree t(n);
-  for (int u = 0; u < n; u++) {
-    for (auto v : g[u]) {
-      if (g[v].size() + leaves[v].size() == 1) {
-        leaves[u].insert(v);
-        t.modify(0, 0, n, u, 1);
-      }
-    }
-    for (auto v : leaves[u]) {
-      g[u].erase(v);
-    }
+  vec<int> ans(n);
+  ans[0] = n;
+  vec<int> q(n);
+  for (int i = 0; i < n; i++) {
+    cin >> q[i];
+    q[i]--;
   }
-  int ans = 0;
-  while (true) {
-    int u = t.get(0, 0, n);
-    if (leaves[u].size() < k)
-      break;
-    int iters = leaves[u].size() / k;
-    while (iters--) {
-      ans++;
-      for (int i = 0; i < k; i++) {
-        leaves[u].erase(leaves[u].begin());
-        t.modify(0, 0, n, u, -1);
-      }
+  int x = n - 1;
+  t.modify(0, rev_p[x] + 1, 1);
+  for (int i = 0; i < n - 1; i++) {
+    t.modify(0, q[i] + 1, -1);
+    while (x > 0 && t.get() <= 0) {
+      x--;
+      t.modify(0, rev_p[x] + 1, 1);
     }
-    if (g[u].size() == 1 && leaves[u].empty()) {
-      int v = *g[u].begin();
-      g[v].erase(u);
-      leaves[v].insert(u);
-      t.modify(0, 0, n, v, 1);
-    }
+    ans[i + 1] = x + 1;
   }
-  cout << ans << '\n';
+  for (int i = 0; i < n; i++) {
+    cout << ans[i] << ' ';
+  }
+  cout << '\n';
 }
 
 signed main() {
@@ -182,7 +174,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  cin >> t;
+  //cin >> t;
   while (t--) {
     run();
   }

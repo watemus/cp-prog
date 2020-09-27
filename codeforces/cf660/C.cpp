@@ -92,86 +92,58 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-struct Segment_tree {
-  vec<int> t;
-  int n;
-  explicit Segment_tree(int n) : n(n), t(n * 4) {}
-  void modify(int v, int lb, int rb, int at, int val) {
-    if (rb - lb == 1) {
-      t[v] += val;
-    } else {
-      int mid = (lb + rb) / 2;
-      if (at < mid) {
-        modify(v * 2 + 1, lb, mid, at, val);
-      } else {
-        modify(v * 2 + 2, mid, rb, at, val);
-      }
-      t[v] = max(t[v * 2 + 1], t[v * 2 + 2]);
-    }
-  }
-  int get(int v, int lb, int rb) {
-    if (rb - lb == 1) {
-      return lb;
-    } else {
-      int mid = (lb + rb) / 2;
-      if (t[v * 2 + 1] == t[v]) {
-        return get(v * 2 + 1, lb, mid);
-      } else {
-        return get(v * 2 + 2, mid, rb);
-      }
-    }
-  }
-};
-
 void run() {
-  int n, k;
-  cin >> n >> k;
-
-  vec<set<int>> g(n), leaves(n);
+  int n, m;
+  cin >> n >> m;
+  vec<int> p(n);
+  for (int i = 0; i < n; i++) {
+    cin >> p[i];
+  }
+  vec<int> h(n);
+  for (int i = 0; i < n; i++) {
+    cin >> h[i];
+  }
+  vec<vec<int>> g(n);
   for (int i = 0; i < n - 1; i++) {
     int u, v;
     cin >> u >> v;
     u--, v--;
-    g[u].insert(v);
-    g[v].insert(u);
+    g[u].push_back(v);
+    g[v].push_back(u);
   }
-  if (k == 1) {
-    cout << n - 1 << '\n';
-    return;
-  }
-  Segment_tree t(n);
-  for (int u = 0; u < n; u++) {
-    for (auto v : g[u]) {
-      if (g[v].size() + leaves[v].size() == 1) {
-        leaves[u].insert(v);
-        t.modify(0, 0, n, u, 1);
+  vec<int> cnt_was(n);
+  function<void(int, int)> calc_cnt_was = [&](int v, int pr) {
+    cnt_was[v] = p[v];
+    for (auto u : g[v]) {
+      if (u != pr) {
+        calc_cnt_was(u, v);
+        cnt_was[v] += cnt_was[u];
       }
     }
-    for (auto v : leaves[u]) {
-      g[u].erase(v);
-    }
-  }
-  int ans = 0;
-  while (true) {
-    int u = t.get(0, 0, n);
-    if (leaves[u].size() < k)
-      break;
-    int iters = leaves[u].size() / k;
-    while (iters--) {
-      ans++;
-      for (int i = 0; i < k; i++) {
-        leaves[u].erase(leaves[u].begin());
-        t.modify(0, 0, n, u, -1);
+  };
+  calc_cnt_was(0, 0);
+  vec<int> cnt_good(n), cnt_bad(n);
+  function<bool(int, int)> check = [&](int v, int pr) {
+    int th = 0;
+    if ((h[v] + cnt_was[v]) % 2)
+      return false;
+    cnt_good[v] = (h[v] + cnt_was[v]) / 2;
+    cnt_bad[v] = cnt_was[v] - cnt_good[v];
+    int cg, cb;
+    cg = cb = 0;
+    for (auto u : g[v]) {
+      if (u != pr) {
+        th += h[u];
+        bool checked = check(u, v);
+        cg += cnt_good[u];
+        cb += cnt_bad[u];
+        if (!checked)
+          return false;
       }
     }
-    if (g[u].size() == 1 && leaves[u].empty()) {
-      int v = *g[u].begin();
-      g[v].erase(u);
-      leaves[v].insert(u);
-      t.modify(0, 0, n, v, 1);
-    }
-  }
-  cout << ans << '\n';
+    return abs(h[v]) <= cnt_was[v] && cg + cb + p[v] == cnt_was[v] && cg <= cnt_good[v] && cb + p[v] >= cnt_bad[v];
+  };
+  cout << (check(0, 0) ? "YES\n" : "NO\n");
 }
 
 signed main() {

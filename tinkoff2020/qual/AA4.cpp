@@ -49,8 +49,40 @@ auto Vec(size_t n, Args&&... args) {
 #else
 #endif
 
-[[noreturn]] void run() {
-
+void run() {
+  int n, m, p;
+  cin >> n >> m >> p;
+  vec<int> a(n), b(m);
+  int ans = 0;
+  for (int i = 0; i < n; i++) {
+    cin >> a[i];
+    ans = max(a[i], ans);
+  }
+  for (int i = 0; i < m; i++) {
+    cin >> b[i];
+    ans = max(ans, b[i]);
+  }
+  auto g = Vec(n, 0, 0);
+  for (int i = 0; i < p; i++) {
+    int u, v;
+    cin >> u >> v;
+    u--, v--;
+    g[u].push_back(v);
+  }
+  auto dpa = a, dpb = b;
+  for (int i = 0; i < n; i++) {
+    sort(ALL(g[i]));
+  }
+  for (int i = 0; i < n; i++) {
+    for (auto u : g[i]) {
+      int na = dpb[u] + a[i];
+      int nb = dpa[i] + b[u];
+      dpb[u] = max(nb, dpb[u]);
+      dpa[i] = max(na, dpa[i]);
+      ans = max({ans, dpb[u], dpa[i]});
+    }
+  }
+  cout << ans << '\n';
 }
 
 signed main() {
@@ -61,11 +93,9 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  // cin >> t;
+  //cin >> t;
   while (t--) {
     run();
   }
   return 0;
 }
-
-

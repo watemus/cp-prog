@@ -1,3 +1,7 @@
+//
+// Created by watemus on 29.07.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -28,31 +32,40 @@ using umap = std::unordered_map<T1, T2>;
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
 const ld PI = acos(-1);
-
-#ifdef LOCAL
-std::mt19937 rnd(228);
-#else
 std::mt19937 rnd(std::chrono::steady_clock::now().time_since_epoch().count());
-#endif
 
 vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
-template<class... Args>
-auto Vec(size_t n, Args&&... args) {
-  if constexpr(sizeof...(args) == 1)
-    return vector(n, args...);
-  else
-    return vector(n, Vec(args...));
-}
-
 #ifdef LOCAL
 #else
 #endif
 
-[[noreturn]] void run() {
-
-}
-
+void run() {
+  int n, k;
+  cin >> n >> k;
+  int l1, r1, l2, r2;
+  cin >> l1 >> r1 >> l2 >> r2;
+  if (l1 > l2) {
+    swap(l1, l2);
+    swap(r1, r2);
+  }
+  int have = 0;
+  have = max(0LL, min(r1, r2) - l2) * n;
+  int ans = INFL;
+  int steps = 0;
+  for (int i = 0; i < n; i++) {
+    if (have >= k) {
+      ans = min(ans, steps);
+      break;
+    }
+    steps += max(0LL, l2 - r1);
+    int to_set = max(r2, r1) - l1 - max(0LL, min(r1, r2) - l2);
+    steps += min(k - have, to_set);
+    have += min(k - have, to_set);
+    ans = min(ans, steps + (k - have) * 2);
+  }
+  cout << ans << '\n';
+}жз
 signed main() {
 #ifdef LOCAL
   std::freopen("input.txt", "r", stdin);
@@ -61,7 +74,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  // cin >> t;
+  cin >> t;
   while (t--) {
     run();
   }

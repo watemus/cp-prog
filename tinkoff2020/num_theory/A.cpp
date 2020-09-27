@@ -1,3 +1,7 @@
+//
+// Created by watemus on 26.09.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -49,8 +53,41 @@ auto Vec(size_t n, Args&&... args) {
 #else
 #endif
 
-[[noreturn]] void run() {
+int gcd(int a, int b, int *x, int *y) {
+  if (b == 0) {
+    *x = 1;
+    *y = 0;
+    return a;
+  }
+  int nx, ny;
+  int g = gcd(b, a % b, &nx, &ny);
+  *x = ny;
+  *y = nx - a / b * ny;
+  return g;
+}
 
+void run() {
+  int a, b, c;
+  cin >> a >> b >> c;
+  if (c % gcd(a, b) != 0) {
+    cout << "Impossible\n";
+    return;
+  }
+  int x, y;
+  int g = gcd(a, b, &x, &y);
+  x *= c / g;
+  y *= c / g;
+  if (x < 0) {
+    int cnt = abs(x) / (b / g);
+    x += cnt * (b / g);
+    y -= cnt * (a / g);
+    x += b / g;
+    y -= a / g;
+  }
+  int cnt = x / (b / g);
+  x -= (b / g) * cnt;
+  y += (a / g) * cnt;
+  cout << x << ' ' << y << '\n';
 }
 
 signed main() {

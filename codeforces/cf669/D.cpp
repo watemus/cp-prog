@@ -1,3 +1,7 @@
+//
+// Created by watemus on 08.09.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -49,8 +53,49 @@ auto Vec(size_t n, Args&&... args) {
 #else
 #endif
 
-[[noreturn]] void run() {
+void run() {
+  int n;
+  cin >> n;
+  vec<int> h(n);
+  for (int i = 0; i < n; i++) {
+    cin >> h[i];
+  }
 
+  vec<int> dp(n, INFL);
+  multiset<int> smn, smx;
+  vec<pair<int, int>> stmx, stmn;
+  dp[n - 1] = 0;
+  stmx.push_back({0, h.back()});
+  stmn.push_back({0, h.back()});
+  smn.insert(0);
+  smx.insert(0);
+  for (int i = n - 2; i >= 0; i--) {
+    int xw = 0, nw = 0;
+    while (stmx.size() && stmx.back().second <= h[i]) {
+      if (stmx.back().second == h[i])
+        xw = 1;
+      dp[i] = min(dp[i], stmx.back().first + 1);
+      smx.erase(stmx.back().first);
+      stmx.pop_back();
+    }
+    if (stmx.size() && !xw) {
+      dp[i] = min(dp[i], stmx.back().first + 1);
+    }
+    while (stmn.size() && stmn.back().second >= h[i]) {
+      dp[i] = min(dp[i], stmn.back().first + 1);
+      if (stmn.back().second == h[i]) {
+        nw = 1;
+      }
+      smn.erase(stmn.back().first);
+      stmn.pop_back();
+    }
+    if (stmn.size() && !nw) {
+      dp[i] = min(dp[i], stmn.back().first + 1);
+    }
+    stmx.push_back({dp[i], h[i]});
+    stmn.push_back({dp[i], h[i]});
+  }
+  cout << dp[0] << '\n';
 }
 
 signed main() {
@@ -61,7 +106,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  // cin >> t;
+  //cin >> t;
   while (t--) {
     run();
   }

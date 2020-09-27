@@ -1,3 +1,7 @@
+//
+// Created by watemus on 08.09.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -49,8 +53,53 @@ auto Vec(size_t n, Args&&... args) {
 #else
 #endif
 
-[[noreturn]] void run() {
-
+void run() {
+  int n, m;
+  cin >> n >> m;
+  vec<array<vec<int>, 2>> g(n);
+  for (int i = 0; i < m; i++) {
+    int u, v, c;
+    cin >> u >> v >> c;
+    u--, v--;
+    g[v][c].push_back(u);
+  }
+  vec<int> ans(n);
+  vec<set<int>> cnt(n);
+  vec<int> dist(n, -1);
+  queue<int> q;
+  q.push(n - 1);
+  dist[n - 1] = 0;
+  while (q.size()) {
+    int v = q.front();
+    q.pop();
+    for (auto u : g[v][0]) {
+      if (cnt[u].size() < 2) {
+        ans[u] = 1;
+        cnt[u].insert(1);
+        if (cnt[u].size() == 2 && dist[u] == -1) {
+          dist[u] = dist[v] + 1;
+          ans[u] = 1 - ans[u];
+          q.push(u);
+        }
+      }
+    }
+    for (auto u : g[v][1]) {
+      if (cnt[u].size() < 2) {
+        ans[u] = 0;
+        cnt[u].insert(0);
+        if (cnt[u].size() == 2 && dist[u] == -1) {
+          dist[u] = dist[v] + 1;
+          ans[u] = 1 - ans[u];
+          q.push(u);
+        }
+      }
+    }
+  }
+  cout << dist[0] << '\n';
+  for (auto el : ans) {
+    cout << el;
+  }
+  cout << '\n';
 }
 
 signed main() {
@@ -61,7 +110,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  // cin >> t;
+  //cin >> t;
   while (t--) {
     run();
   }

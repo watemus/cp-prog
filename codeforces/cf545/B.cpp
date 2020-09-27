@@ -1,3 +1,7 @@
+//
+// Created by watemus on 02.08.2020.
+//
+
 /*
  %=%=%+*++%=%@@###@###@@%%%%======++++++=======%%%%====%%%%%%@@@@@@@%%@@%=*--:+%@###########%%%@@+=#######@##
 %%+%++%=%%=@@##@#@#@#@@@@%%%%======+======+============%%%%%@@@@@@@####@@%%=%@##########@##*@=%@==@####@##@@
@@ -92,86 +96,64 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-struct Segment_tree {
-  vec<int> t;
-  int n;
-  explicit Segment_tree(int n) : n(n), t(n * 4) {}
-  void modify(int v, int lb, int rb, int at, int val) {
-    if (rb - lb == 1) {
-      t[v] += val;
-    } else {
-      int mid = (lb + rb) / 2;
-      if (at < mid) {
-        modify(v * 2 + 1, lb, mid, at, val);
-      } else {
-        modify(v * 2 + 2, mid, rb, at, val);
-      }
-      t[v] = max(t[v * 2 + 1], t[v * 2 + 2]);
+vec<int> pi(const string &s) {
+  vec<int> p(s.size());
+  for (int i = 1; i < s.size(); i++) {
+    int cur = p[i - 1];
+    while (cur > 0 && s[i] != s[cur]) {
+      cur = p[cur - 1];
     }
+    if (s[cur] == s[i]) cur++;
+    p[i] = cur;
   }
-  int get(int v, int lb, int rb) {
-    if (rb - lb == 1) {
-      return lb;
-    } else {
-      int mid = (lb + rb) / 2;
-      if (t[v * 2 + 1] == t[v]) {
-        return get(v * 2 + 1, lb, mid);
-      } else {
-        return get(v * 2 + 2, mid, rb);
-      }
-    }
-  }
-};
+  return p;
+}
 
 void run() {
-  int n, k;
-  cin >> n >> k;
-
-  vec<set<int>> g(n), leaves(n);
-  for (int i = 0; i < n - 1; i++) {
-    int u, v;
-    cin >> u >> v;
-    u--, v--;
-    g[u].insert(v);
-    g[v].insert(u);
+  string s, t;
+  cin >> s >> t;
+  auto p = pi(t);
+  array<int, 2> s_cnt{0, 0}, t_cnt_pref{0, 0}, t_cnt_suf{0, 0};
+  for (auto ch : s) {
+    s_cnt[ch - '0']++;
   }
-  if (k == 1) {
-    cout << n - 1 << '\n';
-    return;
+  for (int i = 0; i < p.back(); i++) {
+    t_cnt_pref[t[i] - '0']++;
   }
-  Segment_tree t(n);
-  for (int u = 0; u < n; u++) {
-    for (auto v : g[u]) {
-      if (g[v].size() + leaves[v].size() == 1) {
-        leaves[u].insert(v);
-        t.modify(0, 0, n, u, 1);
-      }
-    }
-    for (auto v : leaves[u]) {
-      g[u].erase(v);
-    }
+  for (int i = p.back(); i < t.size(); i++) {
+    t_cnt_suf[t[i] - '0']++;
   }
   int ans = 0;
-  while (true) {
-    int u = t.get(0, 0, n);
-    if (leaves[u].size() < k)
-      break;
-    int iters = leaves[u].size() / k;
-    while (iters--) {
-      ans++;
-      for (int i = 0; i < k; i++) {
-        leaves[u].erase(leaves[u].begin());
-        t.modify(0, 0, n, u, -1);
+  string s_ans;
+  if (t_cnt_pref[0] <= s_cnt[0] && t_cnt_pref[1] <= s_cnt[1]) {
+    for (int i : {0, 1}) {
+      s_cnt[i] -= t_cnt_pref[i];
+    }
+    for (int i = 0; i < p.back(); i++) {
+      s_ans.push_back(t[i]);
+    }
+    while (t_cnt_suf[0] <= s_cnt[0] && t_cnt_suf[1] <= s_cnt[1]) {
+      for (int i : {0, 1}) {
+        s_cnt[i] -= t_cnt_suf[i];
       }
+      for (int i = p.back(); i < t.size(); i++) {
+        s_ans.push_back(t[i]);
+      }
+      ans++;
     }
-    if (g[u].size() == 1 && leaves[u].empty()) {
-      int v = *g[u].begin();
-      g[v].erase(u);
-      leaves[v].insert(u);
-      t.modify(0, 0, n, v, 1);
+    for (int i = 0; i < s_cnt[0]; i++) {
+      s_ans.push_back('0');
     }
+    for (int i = 0; i < s_cnt[1]; i++) {
+      s_ans.push_back('1');
+    }
+    //cout << ans << '\n';
+    cout << s_ans << '\n';
+  } else {
+    //cout << "0\n";
+    cout << s << '\n';
   }
-  cout << ans << '\n';
+
 }
 
 signed main() {
@@ -182,7 +164,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  cin >> t;
+  //cin >> t;
   while (t--) {
     run();
   }

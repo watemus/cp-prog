@@ -92,86 +92,24 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-struct Segment_tree {
-  vec<int> t;
-  int n;
-  explicit Segment_tree(int n) : n(n), t(n * 4) {}
-  void modify(int v, int lb, int rb, int at, int val) {
-    if (rb - lb == 1) {
-      t[v] += val;
-    } else {
-      int mid = (lb + rb) / 2;
-      if (at < mid) {
-        modify(v * 2 + 1, lb, mid, at, val);
-      } else {
-        modify(v * 2 + 2, mid, rb, at, val);
-      }
-      t[v] = max(t[v * 2 + 1], t[v * 2 + 2]);
-    }
-  }
-  int get(int v, int lb, int rb) {
-    if (rb - lb == 1) {
-      return lb;
-    } else {
-      int mid = (lb + rb) / 2;
-      if (t[v * 2 + 1] == t[v]) {
-        return get(v * 2 + 1, lb, mid);
-      } else {
-        return get(v * 2 + 2, mid, rb);
-      }
-    }
-  }
-};
-
 void run() {
-  int n, k;
-  cin >> n >> k;
+  int n;
+  cin >> n;
 
-  vec<set<int>> g(n), leaves(n);
-  for (int i = 0; i < n - 1; i++) {
-    int u, v;
-    cin >> u >> v;
-    u--, v--;
-    g[u].insert(v);
-    g[v].insert(u);
-  }
-  if (k == 1) {
-    cout << n - 1 << '\n';
-    return;
-  }
-  Segment_tree t(n);
-  for (int u = 0; u < n; u++) {
-    for (auto v : g[u]) {
-      if (g[v].size() + leaves[v].size() == 1) {
-        leaves[u].insert(v);
-        t.modify(0, 0, n, u, 1);
+  vec<int> ar = {6, 10, 14, 15, 21};
+  for (int i = 0; i < ar.size(); i++) {
+    for (int j = i + 1; j < ar.size(); j++) {
+      for (int k = j + 1; k < ar.size(); k++) {
+        int rem = n - ar[i] - ar[j] - ar[k];
+        if (rem > 0 && rem != ar[i] && rem != ar[j] && rem != ar[k]) {
+          cout << "YES\n";
+          cout << ar[i] << " " << ar[j] << ' ' << ar[k] << ' ' << rem << '\n';
+          return;
+        }
       }
     }
-    for (auto v : leaves[u]) {
-      g[u].erase(v);
-    }
   }
-  int ans = 0;
-  while (true) {
-    int u = t.get(0, 0, n);
-    if (leaves[u].size() < k)
-      break;
-    int iters = leaves[u].size() / k;
-    while (iters--) {
-      ans++;
-      for (int i = 0; i < k; i++) {
-        leaves[u].erase(leaves[u].begin());
-        t.modify(0, 0, n, u, -1);
-      }
-    }
-    if (g[u].size() == 1 && leaves[u].empty()) {
-      int v = *g[u].begin();
-      g[v].erase(u);
-      leaves[v].insert(u);
-      t.modify(0, 0, n, v, 1);
-    }
-  }
-  cout << ans << '\n';
+  cout << "NO\n";
 }
 
 signed main() {

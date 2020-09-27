@@ -1,7 +1,3 @@
-#ifdef LOCAL
-#define _GLIBCXX_DEBUG
-#endif
-
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -28,12 +24,7 @@ using umap = std::unordered_map<T1, T2>;
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
 const ld PI = acos(-1);
-
-#ifdef LOCAL
-std::mt19937 rnd(228);
-#else
 std::mt19937 rnd(std::chrono::steady_clock::now().time_since_epoch().count());
-#endif
 
 vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
@@ -49,8 +40,49 @@ auto Vec(size_t n, Args&&... args) {
 #else
 #endif
 
-[[noreturn]] void run() {
-
+void run() {
+  int n;
+  cin >> n;
+  vec<int> a(n);
+  string FF = "T";
+  string SS = "HL";
+  int sm = 0;
+  for (int i = 0; i < n; i++) {
+    cin >> a[i];
+    sm += a[i];
+  }
+  if (n == 1) {
+    cout << FF << '\n';
+    return;
+  }
+  const int MAXN = 101* 101;
+  vec<int> suka(MAXN, -INFI);
+  suka[0] = 0;
+  for (int i = 0; i < n; i++) {
+    for (int j = MAXN - 1; j >= a[i]; j--) {
+      if (suka[j - a[i]] != -INFI) {
+        suka[j] = max({suka[j - a[i]] + 1, suka[j]});
+      }
+    }
+  }
+  if (sm % 2 == 0 ) {
+    if (suka[sm / 2] != -INFI) {
+      cout << SS << '\n';
+      return;
+    }
+    for (int i = sm / 2 + 1; i <= sm; i++) {
+      if (suka[i] >= 2) {
+        cout << SS << '\n';
+        return;
+      } else if (suka[i] == 1) {
+        cout << FF << "\n";
+        return;
+      }
+    }
+    cout << FF << '\n';
+  } else {
+    cout << FF << '\n';
+  }
 }
 
 signed main() {
@@ -61,11 +93,10 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  // cin >> t;
+  cin >> t;
   while (t--) {
     run();
   }
   return 0;
 }
-
-
+ 

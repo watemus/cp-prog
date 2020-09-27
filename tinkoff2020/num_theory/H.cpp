@@ -1,3 +1,7 @@
+//
+// Created by watemus on 27.09.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -49,8 +53,38 @@ auto Vec(size_t n, Args&&... args) {
 #else
 #endif
 
-[[noreturn]] void run() {
-
+void run() {
+  int n, m;
+  cin >> n >> m;
+  vec<int> primes;
+  for (int i = 2; i * i <= m; i++) {
+    if (m % i == 0) {
+      primes.push_back(i);
+      while (m % i == 0) {
+        m /= i;
+      }
+    }
+  }
+  if (m > 1) {
+    primes.push_back(m);
+  }
+  int ans = n;
+  for (int mask = 1; mask < (1 << primes.size()); mask++) {
+    int p = 1;
+    int cnt = 0;
+    for (int i = 0; i < primes.size(); i++) {
+      if ((1 << i) & mask) {
+        cnt++;
+        p *= primes[i];
+      }
+    }
+    if (cnt % 2) {
+      ans -= n / p;
+    } else {
+      ans += n / p;
+    }
+  }
+  cout << ans << '\n';
 }
 
 signed main() {

@@ -49,8 +49,28 @@ auto Vec(size_t n, Args&&... args) {
 #else
 #endif
 
-[[noreturn]] void run() {
-
+void run() {
+  int n;
+  cin >> n;
+  map<int, int> cnt;
+  for (int i = 0; i < n; i++) {
+    int el = 0;
+    cin >> el;
+    cnt[el]++;
+  };
+  int ans = 0;
+  bool ws = false;
+  for (int i = 0; i < 1000; i++) {
+    if (cnt[i] < 2 && !ws) {
+      ans += i;
+      ws = true;
+    }
+    if (cnt[i] == 0) {
+      ans += i;
+      break;
+    }
+  }
+  cout << ans << '\n';
 }
 
 signed main() {
@@ -61,7 +81,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  // cin >> t;
+  cin >> t;
   while (t--) {
     run();
   }

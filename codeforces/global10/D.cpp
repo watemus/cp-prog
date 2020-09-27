@@ -1,3 +1,7 @@
+//
+// Created by watemus on 16.08.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -28,29 +32,39 @@ using umap = std::unordered_map<T1, T2>;
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
 const ld PI = acos(-1);
-
-#ifdef LOCAL
-std::mt19937 rnd(228);
-#else
 std::mt19937 rnd(std::chrono::steady_clock::now().time_since_epoch().count());
-#endif
 
 vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
-template<class... Args>
-auto Vec(size_t n, Args&&... args) {
-  if constexpr(sizeof...(args) == 1)
-    return vector(n, args...);
-  else
-    return vector(n, Vec(args...));
-}
-
 #ifdef LOCAL
 #else
 #endif
 
-[[noreturn]] void run() {
-
+void run() {
+  int n;
+  cin >> n;
+  string s;
+  cin >> s;
+  vec<int> blocks {1};
+  for (int i = 1; i < n; i++) {
+    if (s[i] == s[i - 1]) {
+      blocks.back()++;
+    } else {
+      blocks.push_back(1);
+    }
+  }
+  if (s.back() == s.front() && blocks.size() > 1) {
+    blocks[0] += blocks.back();
+    blocks.pop_back();
+  }
+  int ans = 0;
+  if (blocks.size() == 1) {
+    ans = (blocks[0] + 2) / 3;
+  } else
+    for (int i : blocks) {
+      ans += i / 3;
+    }
+  cout << ans << '\n';
 }
 
 signed main() {
@@ -61,7 +75,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  // cin >> t;
+  cin >> t;
   while (t--) {
     run();
   }

@@ -1,3 +1,7 @@
+//
+// Created by watemus on 01.08.2020.
+//
+
 /*
  %=%=%+*++%=%@@###@###@@%%%%======++++++=======%%%%====%%%%%%@@@@@@@%%@@%=*--:+%@###########%%%@@+=#######@##
 %%+%++%=%%=@@##@#@#@#@@@@%%%%======+======+============%%%%%@@@@@@@####@@%%=%@##########@##*@=%@==@####@##@@
@@ -70,7 +74,7 @@ using namespace std;
 using ll = long long;
 using ld = long double;
 
-#define int ll
+//#define int ll
 
 template<typename T>
 using vec = std::vector<T>;
@@ -92,86 +96,122 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-struct Segment_tree {
-  vec<int> t;
-  int n;
-  explicit Segment_tree(int n) : n(n), t(n * 4) {}
-  void modify(int v, int lb, int rb, int at, int val) {
-    if (rb - lb == 1) {
-      t[v] += val;
-    } else {
-      int mid = (lb + rb) / 2;
-      if (at < mid) {
-        modify(v * 2 + 1, lb, mid, at, val);
-      } else {
-        modify(v * 2 + 2, mid, rb, at, val);
+vec<vec<int>> g, rg;
+
+inline int add_var() {
+  int var = g.size();
+  g.push_back({});
+  g.push_back({});
+  rg.push_back({});
+  rg.push_back({});
+  return var;
+}
+
+inline void add_expr(int u, int v) {
+  g[u ^ 1].push_back(v);
+  g[v ^ 1].push_back(u);
+  rg[u].push_back(v ^ 1);
+  rg[v].push_back(u ^ 1);
+}
+
+vec<int> solve_2sat() {
+  int n = g.size();
+  vec<int> solution, comp(n);
+  solution.reserve(n);
+  function<void(int)> calc_top_sort = [&](int v) {
+    comp[v] = 1;
+    for (auto u : g[v]) {
+      if (!comp[u])
+        calc_top_sort(u);
+    }
+    solution.push_back(v);
+  };
+  for (int i = 0; i < n; i++) {
+    if (!comp[i])
+      calc_top_sort(i);
+  }
+  comp.assign(n, -1);
+  reverse(ALL(solution));
+  int col = 0;
+  function<void(int, int)> calc_cond = [&](int v, int cur_col) {
+    comp[v] = cur_col;
+    for (auto u : rg[v]) {
+      if (comp[u] == -1) {
+        calc_cond(u, cur_col);
       }
-      t[v] = max(t[v * 2 + 1], t[v * 2 + 2]);
+    }
+  };
+  for (auto v : solution) {
+    if (comp[v] == -1) {
+      calc_cond(v, col);
+      col++;
     }
   }
-  int get(int v, int lb, int rb) {
-    if (rb - lb == 1) {
-      return lb;
+  solution.assign(n, 0);
+  for (int i = 0; i < n; i += 2) {
+    if (comp[i] == comp[i + 1]) {
+      cout << "-1\n";
+      exit(0);
+    } else if (comp[i] > comp[i + 1]) {
+      solution[i] = 1;
     } else {
-      int mid = (lb + rb) / 2;
-      if (t[v * 2 + 1] == t[v]) {
-        return get(v * 2 + 1, lb, mid);
-      } else {
-        return get(v * 2 + 2, mid, rb);
-      }
+      solution[i + 1] = 1;
     }
   }
-};
+  return solution;
+}
 
 void run() {
-  int n, k;
-  cin >> n >> k;
-
-  vec<set<int>> g(n), leaves(n);
-  for (int i = 0; i < n - 1; i++) {
+  int num_wish, num_stations, max_power, num_same;
+  cin >> num_wish >> num_stations >> max_power >> num_same;
+  vec<int> radios_vars(num_stations);
+  for (int i = 0; i < num_stations; i++) {
+    radios_vars[i] = add_var();
+  }
+  for (int i = 0; i < num_wish; i++) {
     int u, v;
     cin >> u >> v;
     u--, v--;
-    g[u].insert(v);
-    g[v].insert(u);
+    add_expr(radios_vars[u], radios_vars[v]);
   }
-  if (k == 1) {
-    cout << n - 1 << '\n';
-    return;
-  }
-  Segment_tree t(n);
-  for (int u = 0; u < n; u++) {
-    for (auto v : g[u]) {
-      if (g[v].size() + leaves[v].size() == 1) {
-        leaves[u].insert(v);
-        t.modify(0, 0, n, u, 1);
-      }
-    }
-    for (auto v : leaves[u]) {
-      g[u].erase(v);
+  vec<int> power_vars(max_power + 1);
+  for (int i = 0; i <= max_power; i++) {
+    power_vars[i] = add_var();
+    if (i > 0) {
+      add_expr(power_vars[i - 1], power_vars[i] ^ 1);
     }
   }
-  int ans = 0;
-  while (true) {
-    int u = t.get(0, 0, n);
-    if (leaves[u].size() < k)
-      break;
-    int iters = leaves[u].size() / k;
-    while (iters--) {
-      ans++;
-      for (int i = 0; i < k; i++) {
-        leaves[u].erase(leaves[u].begin());
-        t.modify(0, 0, n, u, -1);
-      }
-    }
-    if (g[u].size() == 1 && leaves[u].empty()) {
-      int v = *g[u].begin();
-      g[v].erase(u);
-      leaves[v].insert(u);
-      t.modify(0, 0, n, v, 1);
+  for (int i = 0; i < num_stations; i++) {
+    int lb, rb;
+    cin >> lb >> rb;
+    lb--, rb--;
+    add_expr(radios_vars[i] ^ 1, power_vars[lb]);
+    add_expr(radios_vars[i] ^ 1, power_vars[rb + 1] ^ 1);
+  }
+  for (int i = 0; i < num_same; i++) {
+    int u, v;
+    cin >> u >> v;
+    u--, v--;
+    add_expr(radios_vars[u] ^ 1, radios_vars[v] ^ 1);
+  }
+  auto solution = solve_2sat();
+  int ans_power = 0;
+  for (int i = 0; i <= max_power; i++) {
+    if (solution[power_vars[i]]) {
+      ans_power = i + 1;
     }
   }
-  cout << ans << '\n';
+  vec<int> ans_stations;
+  for (int i = 0; i < num_stations; i++) {
+    if (solution[radios_vars[i]]) {
+      ans_stations.push_back(i + 1);
+    }
+  }
+  cout << ans_stations.size() << ' ' << ans_power << '\n';
+  for (auto station : ans_stations) {
+    cout << station << ' ';
+  }
+  cout << '\n';
 }
 
 signed main() {
@@ -182,7 +222,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  cin >> t;
+  //cin >> t;
   while (t--) {
     run();
   }

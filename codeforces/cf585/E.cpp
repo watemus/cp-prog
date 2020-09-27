@@ -1,3 +1,7 @@
+//
+// Created by watemus on 31.07.2020.
+//
+
 /*
  %=%=%+*++%=%@@###@###@@%%%%======++++++=======%%%%====%%%%%%@@@@@@@%%@@%=*--:+%@###########%%%@@+=#######@##
 %%+%++%=%%=@@##@#@#@#@@@@%%%%======+======+============%%%%%@@@@@@@####@@%%=%@##########@##*@=%@==@####@##@@
@@ -92,86 +96,52 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-struct Segment_tree {
-  vec<int> t;
-  int n;
-  explicit Segment_tree(int n) : n(n), t(n * 4) {}
-  void modify(int v, int lb, int rb, int at, int val) {
-    if (rb - lb == 1) {
-      t[v] += val;
-    } else {
-      int mid = (lb + rb) / 2;
-      if (at < mid) {
-        modify(v * 2 + 1, lb, mid, at, val);
-      } else {
-        modify(v * 2 + 2, mid, rb, at, val);
-      }
-      t[v] = max(t[v * 2 + 1], t[v * 2 + 2]);
-    }
-  }
-  int get(int v, int lb, int rb) {
-    if (rb - lb == 1) {
-      return lb;
-    } else {
-      int mid = (lb + rb) / 2;
-      if (t[v * 2 + 1] == t[v]) {
-        return get(v * 2 + 1, lb, mid);
-      } else {
-        return get(v * 2 + 2, mid, rb);
-      }
-    }
-  }
-};
-
 void run() {
-  int n, k;
-  cin >> n >> k;
-
-  vec<set<int>> g(n), leaves(n);
-  for (int i = 0; i < n - 1; i++) {
-    int u, v;
-    cin >> u >> v;
-    u--, v--;
-    g[u].insert(v);
-    g[v].insert(u);
+  int n;
+  cin >> n;
+  const int MAX = 20;
+  int cnt[MAX][MAX];
+  for (auto &row : cnt) {
+    memset(row, 0, sizeof row);
   }
-  if (k == 1) {
-    cout << n - 1 << '\n';
-    return;
+  vec<int> col_pos[MAX];
+  for (int i = 0; i < n; i++) {
+    int col;
+    cin >> col;
+    col--;
+    col_pos[col].push_back(i);
   }
-  Segment_tree t(n);
-  for (int u = 0; u < n; u++) {
-    for (auto v : g[u]) {
-      if (g[v].size() + leaves[v].size() == 1) {
-        leaves[u].insert(v);
-        t.modify(0, 0, n, u, 1);
+  for (int col1 = 0; col1 < MAX; col1++) {
+    for (int col2 = 0; col2 < MAX; col2++) {
+      if (col1 == col2 || col_pos[col1].empty() || col_pos[col2].empty()) {
+        continue;
+      }
+      int pos1 = 0, pos2 = 0;
+      while (pos1 < col_pos[col1].size()) {
+        while (pos2 < col_pos[col2].size() && col_pos[col2][pos2] < col_pos[col1][pos1])
+          pos2++;
+        cnt[col1][col2] += pos2;
+        pos1++;
       }
     }
-    for (auto v : leaves[u]) {
-      g[u].erase(v);
-    }
   }
-  int ans = 0;
-  while (true) {
-    int u = t.get(0, 0, n);
-    if (leaves[u].size() < k)
-      break;
-    int iters = leaves[u].size() / k;
-    while (iters--) {
-      ans++;
-      for (int i = 0; i < k; i++) {
-        leaves[u].erase(leaves[u].begin());
-        t.modify(0, 0, n, u, -1);
+  vec<int> dp(1 << MAX, INFL);
+  for (int i = 0; i < MAX; i++) {
+    dp[1 << i] = 0;
+  }
+  for (int mask = 0; mask < (1 << MAX); mask++) {
+    for (int nw = 0; nw < MAX; nw++) {
+      if (mask & (1 << nw)) continue;
+      int sum = 0;
+      for (int i = 0; i < MAX; i++) {
+        if (i != nw && (mask & (1 << i))) {
+          sum += cnt[nw][i];
+        }
       }
-    }
-    if (g[u].size() == 1 && leaves[u].empty()) {
-      int v = *g[u].begin();
-      g[v].erase(u);
-      leaves[v].insert(u);
-      t.modify(0, 0, n, v, 1);
+      dp[mask ^ (1 << nw)] = min(dp[mask ^ (1 << nw)], dp[mask] + sum);
     }
   }
-  cout << ans << '\n';
+  cout << dp[(1 << MAX) - 1] << '\n';
 }
 
 signed main() {
@@ -182,7 +152,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  cin >> t;
+  //cin >> t;
   while (t--) {
     run();
   }

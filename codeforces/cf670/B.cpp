@@ -49,8 +49,26 @@ auto Vec(size_t n, Args&&... args) {
 #else
 #endif
 
-[[noreturn]] void run() {
-
+void run() {
+  int n;
+  cin >> n;
+  vec<int> a(n);
+  for (int i = 0; i < n; i++) {
+    cin >> a[i];
+  }
+  sort(ALL(a));
+  int ans = INT64_MIN;
+  int cr = 1;
+  for (int i = 0; i < 5; i++) {
+    int ccr = cr;
+    for (int j = n - 5 + i; j < n; j++) {
+      ccr *= a[j];
+    }
+    ans = max(ans, ccr);
+    cr *= a[i];
+  }
+  ans = max(ans, cr);
+  cout << ans << '\n';
 }
 
 signed main() {
@@ -61,7 +79,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  // cin >> t;
+  cin >> t;
   while (t--) {
     run();
   }

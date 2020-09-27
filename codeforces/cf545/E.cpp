@@ -1,3 +1,7 @@
+//
+// Created by watemus on 02.08.2020.
+//
+
 /*
  %=%=%+*++%=%@@###@###@@%%%%======++++++=======%%%%====%%%%%%@@@@@@@%%@@%=*--:+%@###########%%%@@+=#######@##
 %%+%++%=%%=@@##@#@#@#@@@@%%%%======+======+============%%%%%@@@@@@@####@@%%=%@##########@##*@=%@==@####@##@@
@@ -92,86 +96,78 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-struct Segment_tree {
-  vec<int> t;
-  int n;
-  explicit Segment_tree(int n) : n(n), t(n * 4) {}
-  void modify(int v, int lb, int rb, int at, int val) {
-    if (rb - lb == 1) {
-      t[v] += val;
-    } else {
-      int mid = (lb + rb) / 2;
-      if (at < mid) {
-        modify(v * 2 + 1, lb, mid, at, val);
-      } else {
-        modify(v * 2 + 2, mid, rb, at, val);
-      }
-      t[v] = max(t[v * 2 + 1], t[v * 2 + 2]);
-    }
-  }
-  int get(int v, int lb, int rb) {
-    if (rb - lb == 1) {
-      return lb;
-    } else {
-      int mid = (lb + rb) / 2;
-      if (t[v * 2 + 1] == t[v]) {
-        return get(v * 2 + 1, lb, mid);
-      } else {
-        return get(v * 2 + 2, mid, rb);
-      }
-    }
-  }
+struct Pt {
+  int x, y;
 };
 
-void run() {
-  int n, k;
-  cin >> n >> k;
+Pt operator+(Pt a, Pt b) {
+  return {a.x - b.x, a.y - b.y};
+}
 
-  vec<set<int>> g(n), leaves(n);
-  for (int i = 0; i < n - 1; i++) {
-    int u, v;
-    cin >> u >> v;
-    u--, v--;
-    g[u].insert(v);
-    g[v].insert(u);
-  }
-  if (k == 1) {
-    cout << n - 1 << '\n';
-    return;
-  }
-  Segment_tree t(n);
-  for (int u = 0; u < n; u++) {
-    for (auto v : g[u]) {
-      if (g[v].size() + leaves[v].size() == 1) {
-        leaves[u].insert(v);
-        t.modify(0, 0, n, u, 1);
+Pt operator-(Pt a, Pt b) {
+  return {a.x - b.x, a.y - b.y};
+}
+
+int operator*(Pt a, Pt b) {
+  return a.x * b.y - a.y * b.x;
+}
+
+void run() {
+  int n, m;
+  cin >> n >> m;
+  vec<Pt> hull {{0, 0}};
+  int k = 0, b = 0;
+  for (int iter = 0; iter < m; iter++) {
+    int q;
+    cin >> q;
+    if (q == 1) {
+      int add;
+      cin >> add;
+      hull.assign(1, {0, 0});
+      n += add;
+      k = b = 0;
+    } else if (q == 2) {
+      int add;
+      cin >> add;
+      Pt nw = {n, k * n + b};
+      n += add;
+      if (k * hull.back().x + b - hull.back().y == k * nw.x + b - nw.y) {
+        cout << hull.back().x + 1 << ' ' << k * hull.back().x + b - hull.back().y << '\n';
+        continue;
+      }
+      while (hull.size() > 1) {
+        Pt prv = hull.back();
+        Pt prvv = hull[hull.size() - 2];
+        prv.y = k * prv.x + b - prv.y;
+        prvv.y = k * prvv.x + b - prvv.y;
+        Pt nww = nw;
+        nww.y = 0;
+        if ((prv - prvv) * (nww - prv) <= 0) {
+          hull.pop_back();
+        } else {
+          break;
+        }
+      }
+      hull.push_back(nw);
+    } else {
+      int cb, ck;
+      cin >> cb >> ck;
+      k += ck;
+      b += cb;
+      while (hull.size() > 1) {
+        Pt prv = hull.back();
+        Pt prvv = hull[hull.size() - 2];
+        prv.y = k * prv.x + b - prv.y;
+        prvv.y = k * prvv.x + b - prvv.y;
+        if (prv.y >= prvv.y) {
+          hull.pop_back();
+        } else {
+          break;
+        }
       }
     }
-    for (auto v : leaves[u]) {
-      g[u].erase(v);
-    }
+    cout << hull.back().x + 1 << ' ' << k * hull.back().x + b - hull.back().y << '\n';
   }
-  int ans = 0;
-  while (true) {
-    int u = t.get(0, 0, n);
-    if (leaves[u].size() < k)
-      break;
-    int iters = leaves[u].size() / k;
-    while (iters--) {
-      ans++;
-      for (int i = 0; i < k; i++) {
-        leaves[u].erase(leaves[u].begin());
-        t.modify(0, 0, n, u, -1);
-      }
-    }
-    if (g[u].size() == 1 && leaves[u].empty()) {
-      int v = *g[u].begin();
-      g[v].erase(u);
-      leaves[v].insert(u);
-      t.modify(0, 0, n, v, 1);
-    }
-  }
-  cout << ans << '\n';
 }
 
 signed main() {
@@ -182,7 +178,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  cin >> t;
+  //cin >> t;
   while (t--) {
     run();
   }

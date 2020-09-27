@@ -1,3 +1,7 @@
+//
+// Created by watemus on 25.08.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -14,7 +18,7 @@ using namespace std;
 using ll = long long;
 using ld = long double;
 
-#define int ll
+//#define int ll
 
 template<typename T>
 using vec = std::vector<T>;
@@ -28,29 +32,40 @@ using umap = std::unordered_map<T1, T2>;
 constexpr ll INFL = 1'000'000'000'000'000'228;
 constexpr int INFI = 1'000'000'228;
 const ld PI = acos(-1);
-
-#ifdef LOCAL
-std::mt19937 rnd(228);
-#else
 std::mt19937 rnd(std::chrono::steady_clock::now().time_since_epoch().count());
-#endif
 
 vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
-template<class... Args>
-auto Vec(size_t n, Args&&... args) {
-  if constexpr(sizeof...(args) == 1)
-    return vector(n, args...);
-  else
-    return vector(n, Vec(args...));
-}
-
 #ifdef LOCAL
 #else
 #endif
 
-[[noreturn]] void run() {
-
+void run() {
+  int n;
+  cin >> n;
+  vec<int> a(n);
+  for (int i = 0; i < n; i++) {
+    cin >> a[i];
+  }
+  function<int(int, int, int)> calc = [&](int lb, int rb, int h) {
+    if (rb < lb)
+      return 0;
+    int ans = rb - lb + 1;
+    int mn = INFI;
+    for (int i = lb; i <= rb; i++) {
+      if (a[i] < mn) mn = a[i];
+    }
+    int cans = (mn - h);
+    int prv = lb - 1;
+    for (int i = lb; i <= rb + 1; i++) {
+      if (i == rb + 1 || a[i] == mn) {
+        cans += calc(prv + 1, i - 1, mn);
+        prv = i;
+      }
+    }
+    return min(ans, cans);
+  };
+  cout << calc(0, n - 1, 0) << '\n';
 }
 
 signed main() {
@@ -61,7 +76,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  // cin >> t;
+  //cin >> t;
   while (t--) {
     run();
   }

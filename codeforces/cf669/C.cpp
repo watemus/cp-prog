@@ -1,3 +1,7 @@
+//
+// Created by watemus on 08.09.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -49,19 +53,56 @@ auto Vec(size_t n, Args&&... args) {
 #else
 #endif
 
-[[noreturn]] void run() {
+int ask(int i, int j) {
+  cout << "? " << i + 1 << ' ' << j + 1 << endl;
+  int ans;
+  cin >> ans;
+  return ans;
+}
 
+void run() {
+  int n;
+  cin >> n;
+  vec<int> p(n);
+  int mx = 0;
+  for (int i = 1; i < n; i++) {
+    int t1 = ask(mx, i);
+    int t2 = ask(i, mx);
+    if (t1 > t2) {
+      mx = i;
+    } else {
+      p[i] = t2;
+    }
+  }
+  set<int> st;
+  for (int i = 1; i <= n; i++) {
+    st.insert(i);
+  }
+  for (int i = 0; i < n; i++) {
+    if (st.count(p[i])) st.erase(p[i]);
+  }
+  for (int i = 0; i < n; i++) {
+    if (p[i] == 0) {
+      p[i] = *st.begin();
+      st.erase(st.begin());
+    }
+  }
+  cout << "! ";
+  for (int i = 0; i < n; i++) {
+    cout << p[i] << ' ';
+  }
+  cout << endl;
 }
 
 signed main() {
 #ifdef LOCAL
-  std::freopen("input.txt", "r", stdin);
+  //std::freopen("input.txt", "r", stdin);
 #else
   std::ios_base::sync_with_stdio(false);
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  // cin >> t;
+  //cin >> t;
   while (t--) {
     run();
   }
