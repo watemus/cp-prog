@@ -1,3 +1,6 @@
+//
+// Created by watemus on 28.09.2020.
+//
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -49,8 +52,60 @@ auto Vec(size_t n, Args&&... args) {
 #else
 #endif
 
-void run() {
+inline int f(int n) {
+  int ans = 1;
+  for (int i = 2; i * i <= n; i++) {
+    if (n % i == 0) {
+      ans *= i - 1;
+      n /= i;
+      while (n % i == 0) {
+        ans *= i;
+        n /= i;
+      }
+    }
+  }
+  if (n > 1) {
+    ans *= n - 1;
+  }
+  return ans;
+}
 
+inline int g(int n) {
+  return n;
+}
+
+int F(int n, int k) {
+  if (k == 1) {
+    return f(n);
+  } else if (n == 1) {
+    return n;
+  } else {
+    if (k % 2) {
+      return f(F(n, k - 1));
+    } else {
+      return F(n, k - 1);
+    }
+  }
+}
+
+int stup(int n, int k) {
+  return F(n, k);
+}
+
+int smart(int n, int k) {
+  while (k > 0 && n > 1) {
+    if (k % 2) {
+      n = f(n);
+    }
+    k--;
+  }
+  return n;
+}
+
+void run() {
+  int n, k;
+  cin >> n >> k;
+  cout << smart(n, k) % (int)(100000007) << '\n';
 }
 
 signed main() {
@@ -67,5 +122,6 @@ signed main() {
   }
   return 0;
 }
+
 
 

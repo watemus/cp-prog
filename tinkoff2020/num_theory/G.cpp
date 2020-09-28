@@ -8,11 +8,11 @@
 
 #include <bits/stdc++.h>
 // fg
-// #pragma GCC optimize("Ofast")
-// #pragma GCC optimize("no-stack-protector")
-// #pragma GCC optimize("unroll-loops")
-// #pragma GCC optimize("fast-math")
-// #pragma GCC optimize("vpt")
+#pragma GCC optimize("Ofast")
+#pragma GCC optimize("no-stack-protector")
+#pragma GCC optimize("unroll-loops")
+#pragma GCC optimize("fast-math")
+#pragma GCC optimize("vpt")
 
 using namespace std;
 
@@ -43,11 +43,6 @@ std::mt19937 rnd(228);
 std::mt19937 rnd(std::chrono::steady_clock::now().time_since_epoch().count());
 #endif
 
-#include <ext/pb_ds/assoc_container.hpp>
-using namespace __gnu_pbds;
-gp_hash_table<int, int> table;
-
-
 vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
 template<class... Args>
@@ -61,7 +56,7 @@ auto Vec(size_t n, Args&&... args) {
 #ifdef LOCAL
 #else
 #endif
-
+//
 constexpr int MAXN = 1e8 + 3;
 
 int prm[MAXN / 10 + 3], lp[MAXN];
@@ -93,15 +88,10 @@ inline void flush();
 
 /** Read */
 
-static const int buf_size = 4096;
+static const int buf_size = 5000;
 
 static char buf[buf_size];
 static int buf_len = 0, buf_pos = 0;
-
-const int RANDOM = chrono::high_resolution_clock::now().time_since_epoch().count();
-struct chash {
-  int operator()(int x) const { return x ^ RANDOM; }
-};
 
 inline bool isEof() {
   if (buf_pos == buf_len) {
@@ -247,34 +237,34 @@ inline void writeDouble(double x, int output_len) {
   writeChar('0' + t);
 }
 
-[[noreturn]] void run() {
+void run() {
   int n;
-  scanf("%d", &n);
+  n = readInt();
   int cnt_prm = 0;
   phi100[0] = 1;
   int tmp;
   int to = 0;
   int at = 0;
-  unordered_map<int, int> phi;
-  phi.reserve(1e6);
+  lp[1] = 1;
+  int cr = 1;
+  fill(prm, prm + MAXN / 10 + 3, INFI);
   for (int i = 2; i <= n; ++i) {
     if (lp[i] == 0) {
       lp[i] = i;
-      phi[i] = i - 1;
       prm[cnt_prm++] = i;
     }
-    phi100[(i - 1) / 100] += phi[i];
-    for (int j = 0; j < cnt_prm && prm[j] <= lp[i] && prm[j] * i <= n; ++j) {
+    for (int j = 0; prm[j] <= lp[i] && prm[j] * i <= n; ++j) {
       tmp = prm[j] * i;
       lp[tmp] = prm[j];
-      if ((lp[i] ^ prm[j]) == 0) {
-        phi[tmp] = phi[i] * prm[j];
-      } else {
-        phi[tmp] = phi[i] * (prm[j] - 1);
-      }
-      // phi100[(tmp - 1) / 100] += phi[tmp];
+      // phi100[(tmp - 1) / 100] += phi[tmp];//
     }
-    phi.erase(phi[i]);
+    int cl = lp[i];
+    tmp = i / cl;
+    lp[i] = lp[tmp] * cl;
+    if (tmp % cl) {
+      lp[i] -= lp[tmp];
+    }
+    phi100[(i - 1) / 100] += lp[i];
   }
   to = (n - 1) / 100;
   for (int i = 0; i <= to; ++i) {
@@ -298,3 +288,4 @@ signed main() {
   }
   return 0;
 }
+
