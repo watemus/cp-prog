@@ -3,5 +3,6 @@ project(cp_prog)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(cp_prog tinkoff2020/num_theory/D.cpp)
+
+add_executable(cp_prog tinkoff2020/dp-opt/C.cpp)
 add_compile_definitions(LOCAL)

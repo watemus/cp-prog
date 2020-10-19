@@ -18,8 +18,8 @@ using namespace std;
 using ll = long long;
 using ld = long double;
 using ull = unsigned long long;
-
-#define int ull
+using i128 = __int128;
+using f128 = _Float128;
 
 template<typename T>
 using vec = std::vector<T>;
@@ -54,20 +54,6 @@ auto Vec(size_t n, Args&&... args) {
 #else
 #endif
 
-int abs(int a) {
-  if (a > 0)
-    return a;
-  return -a;
-}
-
-int mult(int a, int b, int mod) {
-  return (__int128)a * b % mod;
-}
-
-int f(int x, int c, int mod) {
-  return (mult(x, x, mod) + c) % mod;
-}
-
 const double TL = 1.7;
 inline bool is_tl() {
   static int is = 0, cnt = 0;
@@ -77,143 +63,49 @@ inline bool is_tl() {
   return is;
 }
 
-int brent(int n, int x0 = 2, int c = 1) {
-  int x = x0;
-  int g = 1;
-  int q = 1;
-  int xs, y;
+i128 read() {
+  ull a;
+  cin >> a;
+  return a;
+}
 
-  int m = 128;
-  int l = 1;
-  while (g == 1) {
-    y = x;
-    for (int i = 1; i < l; i++)
-      x = f(x, c, n);
-    int k = 0;
-    while (k < l && g == 1) {
-      xs = x;
-      for (int i = 0; i < m && i < l - k; i++) {
-        x = f(x, c, n);
-        q = mult(q, abs(y - x), n);
+inline bool is_square(i128 n) {
+  i128 dn = i128(sqrtf128(n));
+  dn *= dn;
+  return n == dn;
+}
+
+inline i128 gcd(i128 a, i128 b) {
+  while (b ^= a ^= b ^= a %= b) {}
+  return a;
+}
+
+i128 Lehman(i128 n) {
+  f128 fn = n;
+  i128 to_k = floorf128(powf128(fn, 1./3.));
+  for (i128 k = 1; k <= to_k; k++) {
+    i128 to_d = floorf128(powf128(n, 1./6.) / (sqrtf128(k) * 4)) + 1;
+    for (i128 d = 0; d <= to_d; d++) {
+      if (is_tl())
+        return n;
+      if (is_square(i128(floorf128(sqrtf128(k * n * 4)) + d) * i128(floorf128(sqrtf128(k * n * 4)) + d) - k * n * 4)) {
+        i128 A = floorf128(sqrtf128(k * n * 4)) + d;
+        i128 B = floorf128(sqrtf128(A * A - k * n * 4));
+        if (1 < gcd(A + B, n) && gcd(A + B, n) < n) {
+          return gcd(A + B, n);
+        } else if (1 < gcd(A - B, n) && gcd(A - B, n) < n) {
+          return gcd(A - B, n);
+        }
       }
-      if (is_tl())
-        return n;
-      g = gcd(q, n);
-      k += m;
     }
-    l *= 2;
   }
-  if (g == n) {
-    do {
-      xs = f(xs, c, n);
-      if (is_tl())
-        return n;
-      g = gcd(abs(xs - y), n);
-    } while (g == 1);
-  }
-  return g;
+  return n;
 }
-
-int pw
-
-long long pollards_p_minus_1(long long n) {
-  int B = 10;
-  long long g = 1;
-  vec<int> primes = {2, 3, 5, 7, 11, 13};
-
-  while (B <= 1000000 && g < n) {
-    long long a = 2 + rand() %  (n - 3);
-    g = gcd(a, n);
-    if (g > 1)
-      return g;
-
-    // compute a^M
-    for (int p : primes) {
-      if (p >= B)
-        continue;
-      long long p_power = 1;
-      while (p_power * p <= B)
-        p_power *= p;
-      a = pw(a, p_power, n);
-
-      g = gcd(a - 1, n);
-      if (g > 1 && g < n)
-        return g;
-    }
-    B *= 2;
-  }
-  return 1;
-}
-
-
-
-int fermat(int n, int iters = 1e6) {
-  int a = ceil(sqrt(n));
-  int b2 = a * a - n;
-  int b = round(sqrt(b2));
-  int iter = 0;
-  while (b * b != b2 && iter < iters) {
-    a = a + 1;
-    b2 = a * a - n;
-    b = round(sqrt(b2));
-    iter++;
-  }
-  if (iter == iters && n % (a - b)) {
-    return n;
-  }
-  return a - b;
-}
-
-
 
 void run() {
-  int n;
-  cin >> n;
-  n--;
-  vec<int> factors;
-  for (int i = 2; i < 2e7; i++) {
-    while (n % i == 0) {
-      factors.push_back(i);
-      n /= i;
-    }
-  }
-
-  int cur = n;
-  int dd = fermat(n, 3e8);
-  cur = dd;
-  n /= dd;
-  while (true) {
-    int d = cur;
-    int pd = d;
-    if (cur == 1) {
-      break;
-    }
-    do {
-      pd = d;
-      d = brent(d);
-      d = fermat(d);
-    } while (d != pd);
-    factors.push_back(d);
-    cur /= d;
-  }
-  cur = n;
-  while (true) {
-    int d = cur;
-    int pd = d;
-    if (cur == 1) {
-      break;
-    }
-    do {
-      pd = d;
-      d = brent(d, rnd() % n + 1);
-      d = fermat(d);
-    } while (d != pd);
-    factors.push_back(d);
-    cur /= d;
-  }
-  cout << factors.size() << '\n';
-  for (auto div : factors) {
-    cout << div - 1 << ' ';
+  int t;
+  while (cin >> t) {
+    cout << char(t);
   }
 }
 
