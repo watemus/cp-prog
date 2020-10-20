@@ -1,5 +1,5 @@
 //
-// Created by watemus on 18.10.2020.
+// Created by watemus on 20.10.2020.
 //
 
 #ifdef LOCAL
@@ -16,9 +16,9 @@ using namespace std;
 #define SS second
 
 using ll = long long;
-using ld = double;
+using ld = long double;
 
-// #define int ll
+#define int ll
 
 template<typename T>
 using vec = std::vector<T>;
@@ -45,55 +45,73 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-const int N = 5e4 + 10;
-const int K = 102;
+const int N = 1e5 + 10;
+const int K = 22;
 
-ld dp[K][N];
+int cnt[N], a[N], p[N];
+int dp[K][N];
 int opt[K][N];
 
-ld x[N], xp[N], xps[N];
-
-inline ld cost(int l, int r) {
-  ld p = (xp[r] - xp[l - 1]) / (r - l + 1);
-  ld ans = (xps[r] - xps[l - 1]) - p * 2 * (xp[r] - xp[l - 1]) + (r - l + 1) * p * p;
-  return ans;
+int lc = 1, rc = 1;
+int cost = 0;
+inline int get(int l, int r) {
+  while (rc < r) {
+    rc++;
+    cost -= cnt[a[rc]] * (cnt[a[rc]] - 1) / 2;
+    cnt[a[rc]]++;
+    cost += cnt[a[rc]] * (cnt[a[rc]] - 1) / 2;
+  }
+  while (lc > l) {
+    lc--;
+    cost -= cnt[a[lc]] * (cnt[a[lc]] - 1) / 2;
+    cnt[a[lc]]++;
+    cost += cnt[a[lc]] * (cnt[a[lc]] - 1) / 2;
+  }
+  while (rc > r) {
+    cost -= cnt[a[rc]] * (cnt[a[rc]] - 1) / 2;
+    cnt[a[rc]]--;
+    cost += cnt[a[rc]] * (cnt[a[rc]] - 1) / 2;
+    rc--;
+  }
+  while (lc < l) {
+    cost -= cnt[a[lc]] * (cnt[a[lc]] - 1) / 2;
+    cnt[a[lc]]--;
+    cost += cnt[a[lc]] * (cnt[a[lc]] - 1) / 2;
+    lc++;
+  }
+  return cost;
 }
 
-void solve(int k, int l, int r, int opt_l, int opt_r) {
-  if (r < l)
+void calc(int k, int l, int r, int opt_l, int opt_r) {
+  if (l > r)
     return;
   int mid = (l + r) / 2;
   dp[k][mid] = INFL;
-  for (int i = max(opt_l - 1, k - 1); i <= min(opt_r + 1, mid - 1); i++) {
-    ld cr = dp[k - 1][i] + cost(i + 1, mid);
-    if (cr < dp[k][mid]) {
-      dp[k][mid] = cr;
+  for (int i = max(k - 1, opt_l); i <= min(mid - 1, opt_r); i++) {
+    int cur_dp = dp[k - 1][i] + get(i + 1, mid);
+    if (cur_dp < dp[k][mid]) {
+      dp[k][mid] = cur_dp;
       opt[k][mid] = i;
     }
   }
-  solve(k, l, mid - 1, opt_l, opt[k][mid]);
-  solve(k, mid + 1, r, opt[k][mid], opt_r);
+  calc(k, l, mid - 1, opt_l, opt[k][mid]);
+  calc(k, mid + 1, r, opt[k][mid], opt_r);
 }
 
 void run() {
   int n, k;
   cin >> n >> k;
   for (int i = 1; i <= n; i++) {
-    cin >> x[i];
+    cin >> a[i];
   }
-  sort(x, x + n + 1);
+  cnt[a[1]] = 1;
   for (int i = 1; i <= n; i++) {
-    xp[i] = xp[i - 1] + x[i];
-    xps[i] = xps[i - 1] + x[i] * x[i];
-  }
-  for (int i = 1; i <= n; i++) {
-    dp[1][i] = cost(1, i);
+    dp[1][i] = get(1, i);
     opt[1][i] = 0;
   }
   for (int i = 2; i <= k; i++) {
-    solve(i, i, n, 1, n + 1);
+    calc(i, i, n, 1, n + 1);
   }
-  cout << fixed << setprecision(20);
   cout << dp[k][n] << '\n';
 }
 

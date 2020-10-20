@@ -94,6 +94,7 @@ void run() {
     }
   }
   make_ans(1, n);
+//  cerr << dp[1][n] << endl;
   for (int i = 1; i <= n; i++) {
     cout << ans[i] << '\n';
   }

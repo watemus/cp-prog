@@ -13,7 +13,7 @@ using namespace std;
 signed main(int argc, char **argv) {
   mt19937 rnd(atoi(argv[1]));
   int n = 4;
-  cout << n << endl;
+  cout << n << ' ' << rnd() % n + 1 << endl;
   for (int i = 0; i < n; i++) {
     cout << rnd() % 6 << ' ';
   }

@@ -1,4 +1,8 @@
 //
+// Created by watemus on 19.10.2020.
+//
+
+//
 // Created by watemus on 18.10.2020.
 //
 
@@ -16,9 +20,9 @@ using namespace std;
 #define SS second
 
 using ll = long long;
-using ld = double;
+using ld = long double;
 
-// #define int ll
+#define int ll
 
 template<typename T>
 using vec = std::vector<T>;
@@ -51,47 +55,39 @@ const int K = 102;
 ld dp[K][N];
 int opt[K][N];
 
-ld x[N], xp[N], xps[N];
-
-inline ld cost(int l, int r) {
-  ld p = (xp[r] - xp[l - 1]) / (r - l + 1);
-  ld ans = (xps[r] - xps[l - 1]) - p * 2 * (xp[r] - xp[l - 1]) + (r - l + 1) * p * p;
-  return ans;
-}
-
-void solve(int k, int l, int r, int opt_l, int opt_r) {
-  if (r < l)
-    return;
-  int mid = (l + r) / 2;
-  dp[k][mid] = INFL;
-  for (int i = max(opt_l - 1, k - 1); i <= min(opt_r + 1, mid - 1); i++) {
-    ld cr = dp[k - 1][i] + cost(i + 1, mid);
-    if (cr < dp[k][mid]) {
-      dp[k][mid] = cr;
-      opt[k][mid] = i;
-    }
-  }
-  solve(k, l, mid - 1, opt_l, opt[k][mid]);
-  solve(k, mid + 1, r, opt[k][mid], opt_r);
-}
-
 void run() {
   int n, k;
   cin >> n >> k;
+  vec<ld> x(n + 1), xp(n + 1), xps(n + 1);
   for (int i = 1; i <= n; i++) {
     cin >> x[i];
   }
-  sort(x, x + n + 1);
+  sort(ALL(x));
   for (int i = 1; i <= n; i++) {
     xp[i] = xp[i - 1] + x[i];
     xps[i] = xps[i - 1] + x[i] * x[i];
   }
+  auto cost = [&](int l, int r) {
+    ld p = (xp[r] - xp[l - 1]) / (r - l + 1);
+    ld ans = (xps[r] - xps[l - 1]) - p * 2 * (xp[r] - xp[l - 1]) + (r - l + 1) * p * p;
+    return ans;
+  };
   for (int i = 1; i <= n; i++) {
     dp[1][i] = cost(1, i);
-    opt[1][i] = 0;
+    opt[1][i] = 1;
   }
   for (int i = 2; i <= k; i++) {
-    solve(i, i, n, 1, n + 1);
+    opt[i][n + 1] = n - 1;
+    for (int j = n; j >= i; j--) {
+      dp[i][j] = INFL;
+      for (int h = i - 1; h <= j - 1; h++) {
+        ld cr = dp[i - 1][h] + cost(h + 1, j);
+        if (cr < dp[i][j]) {
+          dp[i][j] = cr;
+          opt[i][j] = h + 1;
+        }
+      }
+    }
   }
   cout << fixed << setprecision(20);
   cout << dp[k][n] << '\n';
@@ -111,5 +107,4 @@ signed main() {
   }
   return 0;
 }
-
 
