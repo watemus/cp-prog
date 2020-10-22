@@ -1,5 +1,5 @@
 //
-// Created by watemus on 20.10.2020.
+// Created by watemus on 21.10.2020.
 //
 
 #ifdef LOCAL
@@ -18,7 +18,7 @@ using namespace std;
 using ll = long long;
 using ld = long double;
 
-// #define int ll
+#define int ll
 
 template<typename T>
 using vec = std::vector<T>;
@@ -45,50 +45,46 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-const int N = 4010;
+constexpr int DIGITS = 20;
+constexpr int MAXN = 50;
 
-int p[N][N];
-
-inline int cost(int l, int r) {
-  return (p[r][r] - p[l - 1][r] - p[r][l - 1] + p[l - 1][l - 1]) / 2;
-}
-
-int dp[N][N];
-int opt[N][N];
-
-void solve(int k, int l, int r, int opt_l, int opt_r) {
-  if (r < l)
-    return;
-  int mid = (l + r) / 2;
-  dp[k][mid] = INFI;
-  for (int i = max(k - 1, opt_l); i <= min(opt_r, mid - 1); i++) {
-    int cur_dp = dp[k - 1][i] + cost(i + 1, mid);
-    if (cur_dp < dp[k][mid]) {
-      dp[k][mid] = cur_dp;
-      opt[k][mid] = i;
-    }
-  }
-  solve(k, l, mid - 1, opt_l, opt[k][mid]);
-  solve(k, mid + 1, r, opt[k][mid], opt_r);
-}
+int dp[DIGITS][MAXN];
+int sm[MAXN];
 
 void run() {
-  int n, k;
-  cin >> n >> k;
-  for (int i = 1; i <= n; i++) {
-    for (int j = 1; j <= n; j++) {
-      cin >> p[i][j];
-      p[i][j] += p[i - 1][j] + p[i][j - 1] - p[i - 1][j - 1];
+  for (int d = 1; d <= 9; d++) {
+    dp[d][1] = 1;
+  }
+  sm[1] = 9;
+  for (int i = 2; i < MAXN; i++) {
+    sm[i] = sm[i - 1];
+    for (int cd = 1; cd <= 9; cd++) {
+      dp[cd][i] = 0;
+      for (int kd = cd; kd <= 9; kd++) {
+        dp[cd][i] += dp[kd][i - 1];
+      }
+      sm[i] += dp[cd][i];
     }
   }
-  for (int i = 1; i <= n; i++) {
-    dp[1][i] = cost(1, i);
-    opt[1][i] = 0;
+  sm[0] = 0;
+  int lst = 0;
+  int n;
+  cin >> n;
+  while (sm[lst] < n)
+    lst++;
+  n -= sm[lst - 1];
+  int cr = 1;
+  while (lst > 0) {
+    int csm = 0;
+    while (csm + dp[cr][lst] < n) {
+      csm += dp[cr][lst];
+      cr++;
+    }
+    n -= csm;
+    cout << cr;
+    lst--;
   }
-  for (int i = 2; i <= k; i++) {
-    solve(i, i, n, 1, n + 1);
-  }
-  cout << dp[k][n] << '\n';
+  cout << '\n';
 }
 
 signed main() {

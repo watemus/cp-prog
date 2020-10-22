@@ -18,7 +18,7 @@ using namespace std;
 using ll = long long;
 using ld = long double;
 
-#define int __int128
+#define int ll
 
 template<typename T>
 using vec = std::vector<T>;
@@ -48,46 +48,36 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 const int N = 2e5 + 10;
 const int LOG_N = 19;
 
-int sp[LOG_N][N];
-int a[N];
-int lg[N];
-
 int n;
-
-void init_sp(int n) {
-  lg[1] = 0;
-  for (int i = 2; i <= n; i++) {
-    lg[i] = lg[i / 2] + 1;
-  }
-  for (int i = 1; i <= n; i++) {
-    sp[0][i] = a[i];
-  }
-  for (int i = 1; i < LOG_N; i++) {
-    for (int j = 0; j + (1 << i) <= N; j++) {
-      sp[i][j] = (sp[i - 1][j] | sp[i - 1][j + (1 << (i - 1))]);
-    }
-  }
-}
-
-inline int get(int l, int r) {
-  int len = lg[r - l + 1];
-  int ans = sp[len][l] | sp[len][r - (1 << len) + 1];
-  return ans;
-}
 
 int dp[N];
 int cnt[N];
+int a[N];
 
 void calc(int Y) {
-  fill(dp, dp + N, -INFL);
-  dp[0] = 0;
-  cnt[0] = 0;
-  for (int i = 0; i <= n; i++) {
-    for (int j = 0; j < i; j++) {
-      int ndp = dp[j] + get(j + 1, i) - Y;
-      if (ndp > dp[i]) {
-        dp[i] = ndp;
-        cnt[i] = cnt[j] + 1;
+  vec<pair<int, pair<int, int>>> segs;
+  dp[0] = cnt[0] = 0;
+  for (int i = 1; i <= n + 1; i++) {
+    dp[i] = 0;
+    cnt[i] = 0;
+    segs.emplace_back(a[i], pair{dp[i - 1], cnt[i - 1]});
+    for (int j = (int)segs.size() - 2; j >= 0; j--) {
+      segs[j].first |= a[i];
+    }
+    sort(ALL(segs));
+    vec<pair<int, pair<int, int>>> new_segs = {segs[0]};
+    for (int j = 1; j < segs.size(); j++) {
+      if (new_segs.back().first == segs[j].first) {
+        new_segs.back().second = max(new_segs.back().second, segs[j].second);
+      } else {
+        new_segs.push_back(segs[j]);
+      }
+    }
+    segs = new_segs;
+    for (auto [_or, vals] : segs) {
+      if (pair(vals.first + _or + Y, vals.second + 1) > pair(dp[i], cnt[i])) {
+        dp[i] = vals.first + _or + Y;
+        cnt[i] = vals.second + 1;
       }
     }
   }
@@ -99,27 +89,28 @@ int rd() {
   return el;
 }
 
+int k;
+
 void run() {
-  int k;
   n = rd();
   k = rd();
+  int tt = 0;
   for (int i = 1; i <= n; i++) {
     a[i] = rd();
   }
-  init_sp(n);
-  int l = 0;
-  int r = INT64_MAX;
+  int l = -INFL;
+  int r = INFL;
   while (l + 1 < r) {
     int mid = (l + r) / 2;
     calc(mid);
     if (cnt[n] < k) {
-      r = mid;
-    } else {
       l = mid;
+    } else {
+      r = mid;
     }
   }
-  calc(l);
-  cout << ll(dp[n] + l * k) << '\n';
+  calc(r);
+  cout << ll(dp[n] - r * k) << '\n';
 }
 
 signed main() {

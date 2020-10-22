@@ -1,7 +1,6 @@
 //
 // Created by watemus on 20.10.2020.
 //
-
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -18,7 +17,7 @@ using namespace std;
 using ll = long long;
 using ld = long double;
 
-// #define int ll
+#define int ll
 
 template<typename T>
 using vec = std::vector<T>;
@@ -45,50 +44,8 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-const int N = 4010;
-
-int p[N][N];
-
-inline int cost(int l, int r) {
-  return (p[r][r] - p[l - 1][r] - p[r][l - 1] + p[l - 1][l - 1]) / 2;
-}
-
-int dp[N][N];
-int opt[N][N];
-
-void solve(int k, int l, int r, int opt_l, int opt_r) {
-  if (r < l)
-    return;
-  int mid = (l + r) / 2;
-  dp[k][mid] = INFI;
-  for (int i = max(k - 1, opt_l); i <= min(opt_r, mid - 1); i++) {
-    int cur_dp = dp[k - 1][i] + cost(i + 1, mid);
-    if (cur_dp < dp[k][mid]) {
-      dp[k][mid] = cur_dp;
-      opt[k][mid] = i;
-    }
-  }
-  solve(k, l, mid - 1, opt_l, opt[k][mid]);
-  solve(k, mid + 1, r, opt[k][mid], opt_r);
-}
-
 void run() {
-  int n, k;
-  cin >> n >> k;
-  for (int i = 1; i <= n; i++) {
-    for (int j = 1; j <= n; j++) {
-      cin >> p[i][j];
-      p[i][j] += p[i - 1][j] + p[i][j - 1] - p[i - 1][j - 1];
-    }
-  }
-  for (int i = 1; i <= n; i++) {
-    dp[1][i] = cost(1, i);
-    opt[1][i] = 0;
-  }
-  for (int i = 2; i <= k; i++) {
-    solve(i, i, n, 1, n + 1);
-  }
-  cout << dp[k][n] << '\n';
+  int n, m, p;
 }
 
 signed main() {
@@ -105,5 +62,6 @@ signed main() {
   }
   return 0;
 }
+
 
 
