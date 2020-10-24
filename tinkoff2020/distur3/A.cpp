@@ -1,3 +1,7 @@
+//
+// Created by watemus on 23.10.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -25,12 +29,12 @@ using uset = std::unordered_set<T>;
 template<typename T1, typename T2>
 using umap = std::unordered_map<T1, T2>;
 
-constexpr ll INFL = 1'000'000'000'000'000'069;
-constexpr int INFI = 1'000'000'069;
+constexpr ll INFL = 1000000000000000228;
+constexpr int INFI = 1000000228;
 const ld PI = acos(-1);
 
 #ifdef LOCAL
-std::mt19937 rnd(69);
+std::mt19937 rnd(228);
 #else
 std::mt19937 rnd(std::chrono::steady_clock::now().time_since_epoch().count());
 #endif
@@ -42,7 +46,38 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+  int n;
+  cin >> n;
+  map<int, vec<int>> mp;
+  for (int i = 0; i < n; i++) {
+    int el;
+    cin >> el;
+    if (mp.count(el)) {
+      mp[el].push_back(i);
+    } else {
+      mp[el] = {i};
+    }
+  }
+  if (n % 2) {
+    cout << "0\n";
+    return;
+  }
+  int ans = n;
+  for (auto valvc : mp) {
+    auto &val = valvc.first;
+    auto &vc = valvc.second;
+    if (vc.size() == 1) continue;
+    for (auto val : vc) {
+      auto it = lower_bound(ALL(vc), n - val - 1);
+      if (it != vc.end() && *it != val) {
+        ans = min(ans, abs(*it - (n - val - 1)));
+      }
+      if (it != vc.begin() && *prev(it) != val) {
+        ans = min(ans, abs(*prev(it) - (n - val - 1)));
+      }
+    }
+  }
+  cout << ans << '\n';
 }
 
 signed main() {

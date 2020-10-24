@@ -1,3 +1,7 @@
+//
+// Created by watemus on 23.10.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -14,7 +18,7 @@ using namespace std;
 using ll = long long;
 using ld = long double;
 
-#define int ll
+//#define int ll
 
 template<typename T>
 using vec = std::vector<T>;
@@ -25,8 +29,8 @@ using uset = std::unordered_set<T>;
 template<typename T1, typename T2>
 using umap = std::unordered_map<T1, T2>;
 
-constexpr ll INFL = 1'000'000'000'000'000'069;
-constexpr int INFI = 1'000'000'069;
+constexpr ll INFL = 1000000000000000069;
+constexpr int INFI = 1000000069;
 const ld PI = acos(-1);
 
 #ifdef LOCAL
@@ -42,7 +46,27 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+  string s;
+  for (int i = 1; i < 1e6; i++) {
+    s += to_string(i);
+  }
+  int n;
+  cin >> n;
+  string qr;
+  cin >> qr;
+  string nq;
+  for (char ch : qr) {
+    if (ch == '?' || ch == '*') {
+      nq += "[0-9]";
+    }
+    if (ch != '?') {
+      nq += ch;
+    }
+  }
+  smatch m;
+  regex r(qr);
+  regex_search(s, m, r);
+  cout << m.position() + 1 << ' ' << m.position() + m.length() << '\n';
 }
 
 signed main() {
