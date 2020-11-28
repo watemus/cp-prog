@@ -1,3 +1,7 @@
+//
+// Created by watemus on 31.10.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -42,7 +46,20 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+  int n;
+  int ans = 0;
+  cin >> n;
+  for (int i = 0; i < n; i++) {
+    int l;
+    cin >> l;
+    vec<int> a(l);
+    for (int j = 0; j < l; j++) cin >> a[j];
+    sort(ALL(a));
+    for (int j = 1; j < l; j++) {
+      ans = max(a[j] - a[j - 1], ans);
+    }
+  }
+  cout << ans << endl;
 }
 
 signed main() {

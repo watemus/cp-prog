@@ -1,3 +1,7 @@
+//
+// Created by watemus on 22.11.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -42,7 +46,13 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+  int a, b;
+  cin >> a >> b;
+  if (a % 3 == b % 3) {
+    cout << a / 3 << ' ' << a % 3 << ' ' << b / 3 << '\n';
+  } else {
+    cout << "-1\n";
+  }
 }
 
 signed main() {

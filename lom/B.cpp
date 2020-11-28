@@ -1,3 +1,7 @@
+//
+// Created by watemus on 12.11.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -14,7 +18,7 @@ using namespace std;
 using ll = long long;
 using ld = long double;
 
-#define int ll
+//#define int ll
 
 template<typename T>
 using vec = std::vector<T>;
@@ -41,8 +45,26 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run() {
+const int N = 1e5 + 10;
+const int K = 1010;
 
+unsigned short dp[N][K];
+
+void run() {
+  string s(1e5, 'a');
+  int k;
+  cin >> k;
+  for (int i = 3; i < s.size(); i++) {
+    int cr = int(s[i - 3] != 'B') + int(s[i - 2] != 'E') + int(s[i - 1] != 'E') + int(s[i] != 'F');
+    for (int j = cr; j <= k; j++) {
+      dp[i + 1][j] = max((int)dp[i][j], dp[i - 3][j - cr] + 1);
+    }
+  }
+  int ans = 0;
+  for (int i = 0; i <= k; i++) {
+    ans = max((int)dp[s.size()][i], ans);
+  }
+  cout << ans << '\n';
 }
 
 signed main() {

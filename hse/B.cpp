@@ -1,0 +1,151 @@
+//
+// Created by watemus on 11.11.2020.
+//
+
+#ifdef LOCAL
+#define _GLIBCXX_DEBUG
+#endif
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define ALL(a) a.begin(), a.end()
+#define RALL(a) a.rbegin(), a.rend()
+#define FF first
+#define SS second
+
+using ll = long long;
+using ld = long double;
+
+#define int ll
+
+template<typename T>
+using vec = std::vector<T>;
+
+template<typename T>
+using uset = std::unordered_set<T>;
+
+template<typename T1, typename T2>
+using umap = std::unordered_map<T1, T2>;
+
+constexpr ll INFL = 1000000000000000069;
+constexpr int INFI = 1000000069;
+const ld PI = acos(-1);
+
+#ifdef LOCAL
+std::mt19937 rnd(69);
+#else
+std::mt19937 rnd(std::chrono::steady_clock::now().time_since_epoch().count());
+#endif
+
+vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+
+#ifdef LOCAL
+#else
+#endif
+
+int calc(int N, int i, int j) {
+  vec<int> cr(N);
+  cr[i] = 1;
+  cr[j] = 1;
+  int pr = i;
+  int ans1 = 0, ans2 = 0;
+  int l = 0;
+  int r = N - 1;
+  for (int iter = 0; iter < N; iter++) {
+    if (iter % 2 == 0) {
+      while (l < N) {
+        if (!cr[l]) {
+          cr[l] = 1;
+          ans1 += abs(l - pr);
+          pr = l;
+          break;
+        }
+        l++;
+      }
+    } else {
+      while (r >= 0) {
+        if (!cr[r]) {
+          cr[r] = 1;
+          ans1 += abs(r - pr);
+          pr = r;
+          break;
+        }
+        r--;
+      }
+    }
+  }
+  ans1 += abs(j - pr);
+  pr = i;
+  cr.assign(N,0);
+  cr[i] = 1;
+  cr[j] = 1;
+  l = 0;
+  r = N - 1;
+  for (int iter = 0; iter < N; iter++) {
+    if (iter % 2 == 1) {
+      while (l < N) {
+        if (!cr[l]) {
+          cr[l] = 1;
+          ans2 += abs(l - pr);
+          pr = l;
+          break;
+        }
+        l++;
+      }
+    } else {
+      while (r >= 0) {
+        if (!cr[r]) {
+          cr[r] = 1;
+          ans2 += abs(r - pr);
+          pr = r;
+          break;
+        }
+        r--;
+      }
+    }
+  }
+  int ans = 0;
+  ans2 += abs(pr - j);
+  ans = max(ans1, ans2);
+  return ans;
+}
+
+void run() {
+  int ans = 0;
+  int n;
+  cin >> n;
+  vec<int> a(n);
+  for (int i = 0; i < n; i++) {
+    cin >> a[i];
+  }
+  for (int i = 0; i < n - 1; i++) {
+    int cr = calc(n, i, i + 1);
+    for (int j = i + 1; j < n; j++) {
+      if (j != i + 1) {
+        if (j <= (n) / 2) cr++;
+        else cr--;
+      }
+      ans = max(ans, abs(a[j] - a[i]) + cr);
+    }
+  }
+  cout << ans << '\n';
+}
+
+signed main() {
+#ifdef LOCAL
+  std::freopen("input.txt", "r", stdin);
+#else
+  std::ios_base::sync_with_stdio(false);
+  std::cin.tie(nullptr);
+#endif
+  int t = 1;
+  // cin >> t;
+  while (t--) {
+    run();
+  }
+  return 0;
+}
+
+

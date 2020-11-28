@@ -1,3 +1,7 @@
+//
+// Created by watemus on 23.11.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -42,7 +46,10 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+  int n;
+  cin >> n;
+  int ans = min(n - 1, 2 + n % 2);
+  cout << ans << '\n';
 }
 
 signed main() {
@@ -53,7 +60,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  // cin >> t;
+   cin >> t;
   while (t--) {
     run();
   }

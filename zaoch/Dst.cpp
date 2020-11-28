@@ -1,3 +1,11 @@
+//
+// Created by watemus on 20.11.2020.
+//
+
+//
+// Created by watemus on 19.11.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -41,8 +49,58 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run() {
+const int N = 1e5;
 
+vec<int> g[N];
+
+int sz[N];
+
+void set_sz(int u, int p) {
+  sz[u] = 1;
+  for (auto v : g[u]) {
+    if (v != p) {
+      set_sz(v, u);
+      sz[u] += sz[v];
+    }
+  }
+}
+
+string s, t;
+
+int dfs(int u, int p, int dep) {
+  if (dep == s.size()) {
+    return 0;
+  } else if (t[u] < s[dep]) {
+    return sz[u];
+  } else if (t[u] == s[dep]) {
+    int ans = 1;
+    for (auto v : g[u]) {
+      if (v != p) {
+        ans += dfs(v, u, dep + 1);
+      }
+    }
+    return ans;
+  }
+  return 0;
+}
+
+void run() {
+  int n, m;
+  cin >> n >> m;
+  cin >> s >> t;
+  for (int i = 1; i < n; i++) {
+    int p;
+    cin >> p;
+    p--;
+    g[p].push_back(i);
+    g[i].push_back(p);
+  }
+  int ans = 0;
+  for (int i = 0; i < n; i++) {
+    set_sz(i, i);
+    ans += dfs(i, i, 0);
+  }
+  cout << ans << '\n';
 }
 
 signed main() {
@@ -59,5 +117,3 @@ signed main() {
   }
   return 0;
 }
-
-

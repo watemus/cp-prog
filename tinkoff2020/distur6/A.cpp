@@ -1,3 +1,7 @@
+//
+// Created by watemus on 13.11.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -41,8 +45,40 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run() {
+const int N = 1e5 + 10;
 
+int t[N * 4];
+
+void run() {
+  int n, k;
+  cin >> n >> k;
+  deque<int> dq;
+  vec<int> dp(n + 1);
+  int sm = 0;
+  int fst = 0;
+  cin >> fst;
+  sm += fst;
+  dq.push_back(fst);
+  dp[1] = fst;
+  for (int i = 2; i <= n; i++) {
+    int el;
+    cin >> el;
+    sm += el;
+    dp[i] = dq.front() + el;
+    while (dq.size() && dq.back() > dp[i])
+      dq.pop_back();
+    dq.push_back(dp[i]);
+    if (i > k + 1 && dq.front() == dp[i - k - 1]) {
+      dq.pop_front();
+    }
+  }
+  int ans = sm;
+  for (int i = 1; i <= n; i++) {
+    if (i + k >= n) {
+      ans = min(ans, dp[i]);
+    }
+  }
+  cout << ans + (sm - ans) / 2 << '\n';
 }
 
 signed main() {

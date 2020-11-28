@@ -1,3 +1,7 @@
+//
+// Created by watemus on 31.10.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -42,7 +46,21 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+  int n;
+  cin >> n;
+  vec<int> fibs = {1, 1};
+  for (int i = 2; i <= 30; i++) {
+    fibs.push_back(fibs[i - 1] + fibs[i - 2]);
+  }
+  for (int i = 0; i < n; i++) {
+    int el;
+    cin >> el;
+    if (find(ALL(fibs), el) != fibs.end()) {
+      cout << "Yes\n";
+    } else {
+      cout << "No\n";
+    }
+  }
 }
 
 signed main() {

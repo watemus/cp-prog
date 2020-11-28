@@ -1,3 +1,6 @@
+//
+// Created by watemus on 19.11.2020.
+//
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -42,7 +45,28 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+  int n;
+  cin >> n;
+  vec<int> a(n);
+  for (int i = 0; i < n; i++) {
+    cin >> a[i];
+  }
+  sort(ALL(a));
+  int mx = a.back();
+  int ans = 0;
+  int rem = 0;
+  for (int i = 0; i < n; i++) {
+    rem += mx - a[i];
+  }
+  ans += (n - rem % n) % n;
+  for (int i = 0; i < n; i++) {
+    int crem = rem - (mx - a[i]);
+    if (crem > a[i]) {
+      ans += crem - a[i];
+      rem -= crem - a[i];
+    }
+  }
+  cout << ans << '\n';
 }
 
 signed main() {
@@ -53,11 +77,12 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  // cin >> t;
+   cin >> t;
   while (t--) {
     run();
   }
   return 0;
 }
+
 
 

@@ -1,3 +1,7 @@
+//
+// Created by watemus on 29.10.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -41,8 +45,46 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run() {
+const int N = 310;
 
+int dp[N][N][N];
+
+void run() {
+  int n, m, k;
+  cin >> n >> m >> k;
+  vec<int> a(n + 1);
+  for (int i = 1; i <= n; i++)
+    cin >> a[i];
+  for (int i = 0; i < N; i++) {
+    for (int j = 0; j < N; j++) {
+      fill(dp[i][j], dp[i][j] + N, INFL);
+    }
+  }
+  for (int i = 0; i < N; i++) {
+    dp[0][0][i] = 0;
+  }
+  for (int i = 1; i <= n; i++) {
+    for (int shift = 0; shift < k; shift++) {
+      dp[i][0][shift] = dp[i - 1][0][shift];
+      if (i % k != 0) {
+        dp[i][0][shift] += a[i];
+      }
+      for (int j = 1; j <= min(i, m); j++) {
+        int pdp = dp[i - 1][j - 1][shift];
+        if ((j + shift) % k != 0) pdp += a[i];
+        int cdp = dp[i - 1][j][shift];
+        if ((i - j) % k != 0) {
+          cdp += a[i];
+        }
+        dp[i][j][shift] = min(cdp, pdp);
+      }
+    }
+  }
+  int ans = INFL;
+  for (int i = 0; i <= m; i++) {
+    ans = min(ans, dp[n][i][(n - i) % k]);
+  }
+  cout << ans << '\n';
 }
 
 signed main() {

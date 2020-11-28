@@ -1,3 +1,7 @@
+//
+// Created by watemus on 25.10.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -14,7 +18,7 @@ using namespace std;
 using ll = long long;
 using ld = long double;
 
-#define int ll
+#define int __int128
 
 template<typename T>
 using vec = std::vector<T>;
@@ -25,8 +29,8 @@ using uset = std::unordered_set<T>;
 template<typename T1, typename T2>
 using umap = std::unordered_map<T1, T2>;
 
-constexpr ll INFL = 1000000000000000069;
-constexpr int INFI = 1000000069;
+constexpr ll INFL = 1'000'000'000'000'000'069;
+constexpr int INFI = 1'000'000'069;
 const ld PI = acos(-1);
 
 #ifdef LOCAL
@@ -41,8 +45,38 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run() {
+ll a, b, c, d;
 
+int check(int m) {
+  int k = (d * m - c) / d;
+  int hp = a * (m / d);
+  hp -= (k * (k + 1)) / 2 * b * d;
+  hp -= (m / d - k) * c * b;
+  return hp;
+}
+
+void run() {
+  cin >> a >> b >> c >> d;
+  int l = 0;
+  int r = 1000;
+  while (l + 100 < r) {
+    int m1 = (l + r) / 3;
+    int m2 = (l + r) * 2 / 3;
+    if (check(m1 * d) < check(m2 * d)) {
+      l = m1;
+    } else {
+      r = m2;
+    }
+  }
+  int ans = 0;
+  for (; l <= r; l++) {
+    ans = max(ans, check(l));
+  }
+  if (ans == INFL) {
+    cout << "-1\n";
+  } else {
+    cout << (ll)ans << '\n';
+  }
 }
 
 signed main() {
@@ -52,8 +86,8 @@ signed main() {
   std::ios_base::sync_with_stdio(false);
   std::cin.tie(nullptr);
 #endif
-  int t = 1;
-  // cin >> t;
+  ll t = 1;
+  cin >> t;
   while (t--) {
     run();
   }

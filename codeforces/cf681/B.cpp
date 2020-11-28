@@ -1,3 +1,7 @@
+//
+// Created by watemus on 02.11.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -41,8 +45,35 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run() {
+const int mod = 998244353;
 
+void run() {
+  int n, k;
+  cin >> n >> k;
+  vec<int> a(n), rp(n), b(k), msk(n);
+  for (int i = 0; i < n; i++) {
+    cin >> a[i];
+    rp[a[i] - 1] = i;
+  }
+  for (int i = 0; i < k; i++) {
+    cin >> b[i];
+    b[i]--;
+    msk[rp[b[i]]]++;
+  }
+  int ans = 1;
+  for (int i = 0; i < k; i++) {
+    int dv = 0;
+    if (rp[b[i]] > 0 && msk[rp[b[i]] - 1] == 0) {
+      dv++;
+    }
+    if (rp[b[i]] + 1 < msk.size() && msk[rp[b[i]] + 1] == 0) {
+      dv++;
+    }
+    msk[rp[b[i]]] = 0;
+    ans *= dv;
+    ans %= mod;
+  }
+  cout << ans << '\n';
 }
 
 signed main() {
@@ -53,7 +84,7 @@ signed main() {
   std::cin.tie(nullptr);
 #endif
   int t = 1;
-  // cin >> t;
+   cin >> t;
   while (t--) {
     run();
   }

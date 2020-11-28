@@ -1,10 +1,17 @@
+//
+// Created by watemus on 13.11.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
 
+#include <immintrin.h>
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
 
 using namespace std;
+using namespace __gnu_pbds;
 
 #define ALL(a) a.begin(), a.end()
 #define RALL(a) a.rbegin(), a.rend()
@@ -14,7 +21,7 @@ using namespace std;
 using ll = long long;
 using ld = long double;
 
-#define int ll
+#define int __int128
 
 template<typename T>
 using vec = std::vector<T>;
@@ -41,8 +48,33 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run() {
+const int N = 1 << 20;
 
+void run() {
+  map<int, int> to;
+  ll n;
+  cin >> n;
+  if (n == 1) {
+    cout << "2\n";
+    return;
+  }
+  for (int i = 0; i < (1 << n); i++) {
+    to[i] = rnd() * rnd();
+  }
+  int ans = 0;
+  int cur = 0;
+  map<int, int> cnt[4];
+  cnt[0][0] = 1;
+  for (int i = 1; i <= (1 << n); i++) {
+    ll el;
+    cin >> el;
+    el = min(el, (1 << n) - el - 1);
+    cur ^= to[el];
+    ans += cnt[i % 4][cur];
+    cnt[i % 4][cur]++;
+  }
+  int m = (1 << n);
+  cout << ll((m * (m + 1)) / 2 - ans) << '\n';
 }
 
 signed main() {

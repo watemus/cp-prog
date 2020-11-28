@@ -1,3 +1,7 @@
+//
+// Created by watemus on 17.11.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -42,7 +46,13 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+  ifstream fin("tst");
+  int c, a, b;
+  fin >> c >> a >> b;
+  ifstream fout("osm");
+  int ans;
+  fout >> ans;
+  assert(ans <= a * b);
 }
 
 signed main() {

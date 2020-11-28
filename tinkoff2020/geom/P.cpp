@@ -1,3 +1,7 @@
+//
+// Created by watemus on 22.11.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -41,8 +45,33 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run() {
+struct Pt {
+  int x, y;
+};
 
+int operator*(Pt a, Pt b) {
+  return a.x * b.y - b.x * a.y;
+}
+
+Pt operator-(Pt a, Pt b) {
+  return {a.x - b.x, a.y - b.y};
+}
+
+void run() {
+  int n;
+  cin >> n;
+  vec<Pt> a(n);
+  for (int i = 0; i < n; i++) {
+    cin >> a[i].x >> a[i].y;
+  }
+  int s = 0;
+  int g = 0;
+  for (int i = 1; i <= n; i++) {
+    s += (a[i % n] * a[i - 1]);
+    g += gcd(abs(a[i % n].x - a[i - 1].x), abs(a[i % n].y - a[i - 1].y));
+  }
+  s = abs(s);
+  cout << (s - g + 2) / 2 << '\n';
 }
 
 signed main() {

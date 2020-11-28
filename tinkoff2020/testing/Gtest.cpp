@@ -1,8 +1,13 @@
+//
+// Created by watemus on 02.11.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
 
 #include <bits/stdc++.h>
+#include "G.cpp"
 
 using namespace std;
 
@@ -14,7 +19,7 @@ using namespace std;
 using ll = long long;
 using ld = long double;
 
-#define int ll
+//#define int ll
 
 template<typename T>
 using vec = std::vector<T>;
@@ -42,6 +47,18 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
+  int n;
+  cin >> n;
+  auto *a = new unsigned[n];
+  auto *b = new unsigned[n];
+  for (int i = 0; i < n; i++) {
+    a[i] = rnd() % 1000 + 10;
+  }
+  int ans = 0;
+  for (int i = 0; i < n; i++) {
+    cin >> b[i];
+    ans += min(a[i], b[i]);
+  }
 
 }
 

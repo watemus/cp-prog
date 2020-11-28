@@ -1,3 +1,7 @@
+//
+// Created by watemus on 06.11.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -41,8 +45,45 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run() {
 
+constexpr ld eps = 1e-15;
+void run() {
+  int n;
+  cin >> n;
+  vec<int> xs(n);
+  for (int i = 0; i < n; i++) {
+    cin >> xs[i];
+  }
+  ld w, v;
+  cin >> w >> v;
+  int q;
+  cin >> q;
+  cout << fixed << setprecision(20);
+  while (q--) {
+    int p, t, u;
+    cin >> p >> t >> u;
+    ld ans = t + ld(xs.back() - p) / ld(u);
+    auto get = [&](ld T, ld s) {
+      int l = -1;
+      int r = INFI;
+      while (l + 1 <r) {
+        int mid = (l + r) / 2;
+        if (mid * w + s / v >= T) {
+          r = mid;
+        } else {
+          l = mid;
+        }
+      }
+      return r;
+    };
+    ld cr = *lower_bound(ALL(xs), p);
+    int gt = get(t + fabsl(cr - p) / u, cr);
+    ans = min(ans, gt * w + ld(xs.back()) / v);
+    cr = *prev(upper_bound(ALL(xs), p));
+    gt = get(t + fabsl(cr - p) / u, cr);
+    ans = min(ans, gt * w + ld(xs.back()) / v);
+    cout << ans << '\n';
+  }
 }
 
 signed main() {

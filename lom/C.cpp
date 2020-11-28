@@ -1,3 +1,7 @@
+//
+// Created by watemus on 12.11.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -41,7 +45,30 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
+const int mod = 1e9 + 7;
+
+int pw(int a, int b) {
+  int ans = 1;
+  while (b > 0) {
+    if (b & 1) {
+      ans *= a;
+      ans %= mod;
+    }
+    a *= a;
+    a %= mod;
+    b >>= 1;
+  }
+  return ans;
+}
+
 void run() {
+  int n;
+  cin >> n;
+  if (n == 1) {
+    cout << "0\n";
+    return;
+  }
+  cout << pw(2, n * n / 4) << '\n';
 
 }
 

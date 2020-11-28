@@ -1,3 +1,7 @@
+//
+// Created by watemus on 19.11.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -42,7 +46,52 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+  int n, m;
+  cin >> n >> m;
+  if (n == 1) {
+    cout << "1\n1\n1\n";
+    return;
+  }
+  vec<int> a(m);
+  vec<int> odds;
+  for (int i = 0; i < m; i++) {
+    cin >> a[i];
+    if (a[i] % 2) {
+      odds.push_back(i);
+    }
+  }
+  if (odds.size() > 2) {
+    cout << "Impossible\n";
+  } else {
+    if (odds.size() >= 1) {
+      swap(a[0], a[odds[0]]);
+    }
+    if (odds.size() >= 2) {
+      swap(a[m - 1], a[odds[1]]);
+    }
+    for (int i = 0; i < m; i++) {
+      cout << a[i] << ' ';
+    }
+    cout << '\n';
+    if (m == 1) {
+      cout << "2\n";
+      cout << a[0] - 1 << ' ' << 1 << '\n';
+    } else {
+      vec<int> ans;
+      ans.push_back(a[0] - 1);
+      if (ans.front() == 0)
+        ans.pop_back();
+      for (int i = 1; i < m - 1; i++) {
+        ans.push_back(a[i]);
+      }
+      ans.push_back(a.back() + 1);
+      cout << ans.size() << '\n';
+      for (auto el : ans) {
+        cout << el << ' ';
+      }
+      cout << '\n';
+    }
+  }
 }
 
 signed main() {

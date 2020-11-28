@@ -1,3 +1,7 @@
+//
+// Created by watemus on 20.11.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -40,6 +44,10 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #ifdef LOCAL
 #else
 #endif
+
+namespace suf_auto {
+
+}
 
 void run() {
 

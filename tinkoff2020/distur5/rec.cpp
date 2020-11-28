@@ -1,3 +1,7 @@
+//
+// Created by watemus on 06.11.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -41,8 +45,40 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run() {
+const int mod = 1e9 + 7;
+int cr[10] = {2, 3, 5, 7, 11, 13};
+vec<pair<int, int>> d;
+int cnt = 0;
+void rec() {
+  if (d.size() > 8)
+    return;
+  if (d.size() == 8) {
+    set<int> st{cr, cr + 6};
+    if (st.size() == 1) {
+      cout << d.size() << '\n';
+      for (auto el : d) {
+        cout << el.first << ' ' << el.second << '\n';
+      }
+      exit(0);
+    }
+  }
+  if (d.size() == 7) cout << ++cnt << endl;
+  for (int i = 0; i < 6; i++) {
+    for (int j = i + 1; j < 6; j++) {
+      int a = cr[i];
+      int b = cr[j];
+      cr[i] = cr[j] = a * b % mod;
+      d.emplace_back(i + 1, j + 1);
+      rec();
+      cr[i] = a;
+      cr[j] = b;
+      d.pop_back();
+    }
+  }
+}
 
+void run() {
+  rec();
 }
 
 signed main() {

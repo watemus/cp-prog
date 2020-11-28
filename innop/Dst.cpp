@@ -1,3 +1,11 @@
+//
+// Created by watemus on 22.11.2020.
+//
+
+//
+// Created by watemus on 22.11.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -41,8 +49,48 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #else
 #endif
 
-void run() {
+const int N = 2e5;
 
+void run() {
+  int n, q;
+  cin >> n >> q;
+  vec<int> p(n), rp(n);
+  for (int i = 0; i < n; i++) {
+    cin >> p[i];
+    rp[p[i] - 1] = i;
+  }
+  {
+    int ans = 1;
+    int cans = 1;
+    for (int i = 1; i < n; i++) {
+      if (rp[i] > rp[i - 1]) {
+        cans += 1;
+        ans = max(cans, ans);
+      } else {
+        cans = 1;
+      }
+    }
+    cout << n - ans << '\n';
+  }
+  while (q--) {
+    int x, y;
+    cin >> x >> y;
+    x--, y--;
+    swap(p[x], p[y]);
+    rp[p[x] - 1] = x;
+    rp[p[y] - 1] = y;
+    int ans = 1;
+    int cans = 1;
+    for (int i = 1; i < n; i++) {
+      if (rp[i] > rp[i - 1]) {
+        cans += 1;
+        ans = max(cans, ans);
+      } else {
+        cans = 1;
+      }
+    }
+    cout << n - ans << '\n';
+  }
 }
 
 signed main() {

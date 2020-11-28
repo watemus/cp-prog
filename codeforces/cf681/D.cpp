@@ -1,3 +1,7 @@
+//
+// Created by watemus on 02.11.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -42,7 +46,19 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
+  int n, k;
+  cin >> n >> k;
+  vec<vec<int>> dp(n, vec<int>(k + 1));
+  for (int i = 0; i < n; i++) {
+    int m;
+    cin >> m;
+    vec<int> cr(m);
+    for (int i = 0; i < m; i++) {
+      cin >> cr[i];
+    }
+    int p = 0;
 
+  }
 }
 
 signed main() {

@@ -1,3 +1,7 @@
+//
+// Created by watemus on 25.10.2020.
+//
+
 #ifdef LOCAL
 #define _GLIBCXX_DEBUG
 #endif
@@ -25,8 +29,8 @@ using uset = std::unordered_set<T>;
 template<typename T1, typename T2>
 using umap = std::unordered_map<T1, T2>;
 
-constexpr ll INFL = 1000000000000000069;
-constexpr int INFI = 1000000069;
+constexpr ll INFL = 1'000'000'000'000'000'069;
+constexpr int INFI = 1'000'000'069;
 const ld PI = acos(-1);
 
 #ifdef LOCAL
@@ -42,7 +46,38 @@ vec<pair<int, int>> DD = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 #endif
 
 void run() {
-
+  int n;
+  cin >> n;
+  vec<pair<char, int>> qs(n * 2);
+  for (auto &[q, i] : qs) {
+    cin >> q;
+    if (q == '-') cin >> i;
+  }
+  reverse(ALL(qs));
+  vec<int> st;
+  vec<int> ans;
+  for (auto [q, i] : qs) {
+    if (q == '-') {
+      if (st.size() && st.back() < i) {
+        cout << "NO\n";
+        return;
+      }
+      st.push_back(i);
+    } else {
+      if (!st.size()) {
+        cout << "NO\n";
+        return;
+      }
+      ans.push_back(st.back());
+      st.pop_back();
+    }
+  }
+  reverse(ALL(ans));
+  cout << "YES\n";
+  for (auto el : ans) {
+    cout << el << ' ';
+  }
+  cout << '\n';
 }
 
 signed main() {
