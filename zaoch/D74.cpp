@@ -1,4 +1,8 @@
 //
+// Created by watemus on 30.11.2020.
+//
+
+//
 // Created by watemus on 28.11.2020.
 //
 
@@ -171,7 +175,7 @@ namespace suff_tree {
   int letter_id[AL][N];
   int ls[AL][N];
   int rs[AL][N];
-  char *ss;
+  std::string *ss;
   int prev[N];
   int prev_let[N];
 
@@ -179,7 +183,7 @@ namespace suff_tree {
     prev[v] = u;
     int cc = 0;
     if (l >= 0) {
-      cc = (ss)[l] - 'a';
+      cc = (*ss)[l] - 'a';
     }
     letter_id[cc][u] = v;
     prev_let[v] = cc;
@@ -189,7 +193,7 @@ namespace suff_tree {
 
   int usd[N];
 
-  inline void build(int v) {
+  void build(int v) {
     int cur_r = sa::len[sa::end];
     do {
       usd[v] = 1;
@@ -226,7 +230,7 @@ namespace suff_tree {
 //    }
   }
 
-  void init(char *ns) {
+  void init(std::string *ns) {
     ss = ns;
 //    edges.clear();
 ////    std::fill(adj_ids, adj_ids + sa::size, vec<int>(0));
@@ -272,7 +276,7 @@ namespace suff_tree {
       if (v == -1) continue;
       std::cerr << u << "->" << v << "(";
       for (int j = std::max(ls[i][u], 0); j < rs[i][u]; j++) {
-        std::cerr << (ss)[j];
+        std::cerr << (*ss)[j];
       }
       std::cerr << ")\n";
       dbg(v);
@@ -301,11 +305,11 @@ namespace suff_tree {
 
   inline bool tour_check(char ch) {
     if (ls[let][id] + pos + 1 < rs[let][id]) {
-      return (ss)[ls[let][id] + pos + 1] == ch;
+      return (*ss)[ls[let][id] + pos + 1] == ch;
     } else if (letter_id[ch - 'a'][letter_id[let][id]] != -1){
       {
         int id2 = letter_id[let][id];
-        if ((ss)[ls[ch - 'a'][id2]] == ch)
+        if ((*ss)[ls[ch - 'a'][id2]] == ch)
           return dp[id2] > 0;
       }
     }
@@ -329,7 +333,7 @@ namespace suff_tree {
       pos++;
     } else if (letter_id[ch - 'a'][letter_id[let][id]] != -1){
       int id2 = letter_id[let][id];
-      if ((ss)[ls[ch - 'a'][id2]] == ch) {
+      if ((*ss)[ls[ch - 'a'][id2]] == ch) {
         pos = 0;
         let = ch - 'a';
         id = id2;
@@ -355,7 +359,7 @@ namespace suff_tree {
       return letter_id[let][id];
     } else if (letter_id[ch - 'a'][letter_id[let][id]] != -1){
       int id2 = letter_id[let][id];
-      if ((ss)[ls[ch - 'a'][id2]] == ch) {
+      if ((*ss)[ls[ch - 'a'][id2]] == ch) {
         return letter_id[ch - 'a'][id2];
       }
     }
@@ -567,8 +571,6 @@ namespace graph {
     suff_tree::tour_up();
   }
 
-  char cs[N];
-
   void solve(int start = 0) {
     d_find_sizes(start, start);
     int centroid = d_find_centroid(start, start, d_size[start]);
@@ -590,13 +592,14 @@ namespace graph {
     int s_len = std::min((int)s.size(), (max_depth1 + max_depth2 + 1) * 2) + 1;
     sa::init();
     sa::push(AL - 1);
-    cs[s_len - 1] = 'd';
-    int pss = 1;
+    std::string cs("d");
+    cs.reserve(s_len);
     for (int i = s_len - 2; i >= 0; i--) {
       sa::push(s[i] - 'a');
-      cs[i] = s[i];
+      cs.push_back(s[i]);
     }
-    suff_tree::init(cs);
+    reverse(ALL(cs));
+    suff_tree::init(&cs);
     cnt_added = 0;
     d_calc_pref(centroid, centroid, 0, 0, s_len);
     if (t[centroid] < s[0]) {
@@ -616,13 +619,14 @@ namespace graph {
           int ss_len = std::min((int) s.size(), (max_depth + 1) * 2) + 1;
           sa::init();
           sa::push(AL - 1);
-          cs[ss_len - 1] = 'd';
-          pss = 1;
+          std::string ccs("d");
+          ccs.reserve(ss_len);
           for (int i = ss_len - 2; i >= 0; i--) {
             sa::push(s[i] - 'a');
-            cs[i] = s[i];
+            ccs.push_back(s[i]);
           }
-          suff_tree::init(cs);
+          reverse(ALL(ccs));
+          suff_tree::init(&ccs);
           cnt_added = 0;
           d_calc_pref(e.v, centroid, t[centroid] - 'a' + 1, t[centroid] - 'a' + 1, ss_len);
 

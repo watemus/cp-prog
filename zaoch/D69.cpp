@@ -23,6 +23,8 @@ Fuck 'em and their law
 #include <bits/stdc++.h>
 
 #ifndef KEK
+
+
 const int MAX_MEM = 5e8;
 int mpos = 0;
 char mem[MAX_MEM];
@@ -33,7 +35,13 @@ inline void * operator new ( size_t n ) {
   return (void *)res;
 }
 inline void operator delete ( void * ) { }
+
+#pragma GCC optimize("Ofast,no-stack-protector")
+#pragma GCC optimize("unroll-loops")
+#pragma GCC optimize("vpt")
+
 #endif
+
 
 //using namespace std;
 
@@ -103,7 +111,7 @@ namespace sa {
     }
     return v;
   }
-  void push(int c) {
+  inline void push(int c) {
     int new_end = new_node(end);
     int p = end;
     while (p != trash && to[c][p] == trash) {
@@ -162,6 +170,7 @@ namespace suff_tree {
   };
 
   vec<int> adj_ids[N];
+  int letter_id[AL][N];
   vec<Edge> edges;
   std::string *ss;
   int prev[N];
@@ -170,6 +179,11 @@ namespace suff_tree {
     adj_ids[u].push_back(edges.size());
     prev[v] = edges.size();
     edges.push_back({u, v, l, r});
+    int cc = 0;
+    if (l >= 0) {
+      cc = (*ss)[l] - 'a';
+    }
+    letter_id[cc][u] = edges.size() - 1;
   }
 
   int usd[N];
@@ -208,6 +222,9 @@ namespace suff_tree {
     for (int i = 0; i < sa::size; i++) {
       adj_ids[i].clear();
     }
+    for (int i = 0; i < AL; i++) {
+      std::fill(letter_id[i], letter_id[i] + sa::size, -1);
+    }
     std::fill(dp, dp + sa::size, 0);
     std::fill(deg_out, deg_out + sa::size, 0);
     std::fill(usd, usd + sa::size, 0);
@@ -242,7 +259,7 @@ namespace suff_tree {
       std::cerr << ")\n";
       dbg(e.v);
     }
-//    std::cerr << "dp[" << u << "] = " << dp[u] << std::endl;
+    std::cerr << "dp[" << u << "] = " << dp[u] << std::endl;
   }
 
   int id;
@@ -257,29 +274,28 @@ namespace suff_tree {
     auto &e = edges[id];
     if (e.l + pos + 1 < e.r) {
       return (*ss)[e.l + pos + 1] == ch;
-    } else {
-      for (auto id2 : adj_ids[e.v]) {
+    } else if (letter_id[ch - 'a'][e.v] != -1){
+      {
+        int id2 = letter_id[ch - 'a'][e.v];
         auto &e2 = edges[id2];
-        if ((*ss)[e2.l] == ch) {
+        if ((*ss)[e2.l] == ch)
           return dp[e2.v] > 0;
-        }
       }
-      return false;
     }
+    return false;
   }
 
   inline void tour_go(char ch) {
     auto &e = edges[id];
     if (e.l + pos + 1 < e.r) {
       pos++;
-    } else {
-      for (auto id2 : adj_ids[e.v]) {
-        auto &e2 = edges[id2];
-        if ((*ss)[e2.l] == ch) {
-          pos = 0;
-          id = id2;
-          return;
-        }
+    } else if (letter_id[ch - 'a'][e.v] != -1){
+      int id2 = letter_id[ch - 'a'][e.v];
+      auto &e2 = edges[id2];
+      if ((*ss)[e2.l] == ch) {
+        pos = 0;
+        id = id2;
+        return;
       }
     }
   }
@@ -288,12 +304,11 @@ namespace suff_tree {
     auto &e = edges[id];
     if (e.l + pos + 1 < e.r) {
       return e.v;
-    } else {
-      for (auto id2 : adj_ids[e.v]) {
-        auto &e2 = edges[id2];
-        if ((*ss)[e2.l] == ch) {
-          return e2.v;
-        }
+    } else if (letter_id[ch - 'a'][e.v] != -1) {
+      int id2 = letter_id[ch - 'a'][e.v];
+      auto &e2 = edges[id2];
+      if ((*ss)[e2.l] == ch) {
+        return e2.v;
       }
     }
     return 0;
@@ -357,12 +372,14 @@ namespace graph {
   int size[N];
   int size_c[AL][N];
   int usd[N];
-  int to[N];
+  int to[N], from[N];
   int pos[N];
   int cnt = 0;
+  int cnt_edges = 0;
 
   void find_sizes(int u, int p, int c_size) {
-    to[cnt++] = u;
+    from[cnt] = u;
+    to[u] = cnt++;
     for (int i = 0; i < AL; i++) {
       size_c[i][u] = 0;
     }
@@ -389,6 +406,17 @@ namespace graph {
       add_edge(i, pre);
     }
     find_sizes(0, 0, n);
+    for (int i = 0; i < edges.size(); i++) {
+      auto &e = edges[i];
+      e.u = to[e.u];
+      e.v = to[e.v];
+      adj_ids[e.u].push_back(i);
+    }
+    std::string st = t;
+    for (int i = 0; i < n; i++) {
+      st[i] = t[from[i]];
+    }
+    t = st;
   }
 
   ll ans = 0;
@@ -417,6 +445,9 @@ namespace graph {
   }
 
   int depth[N];
+  int q[N];
+  int qs, qf;
+  int prevv[N];
 
   int d_find_depth(int u, int p, int dep) {
     int max_depth = depth[u] = dep;
@@ -429,6 +460,11 @@ namespace graph {
     return max_depth;
   }
 
+  int cnt_added = 0;
+
+  int qh1[N];
+  int qh2[N];
+
   void d_calc_pref(int u, int p, int cur_hash1, int cur_hash2, int s_len) {
     if (depth[u] > s_len) {
       return;
@@ -437,6 +473,7 @@ namespace graph {
     cur_hash2 = ((cur_hash2 * 1ll * P2) + t[u] - 'a' + 1) % MOD2;
     if (hash::h1[depth[u]] == cur_hash1 && hash::h2[depth[u]] == cur_hash2) {
       suff_tree::dp[suff_tree::at[s_len - depth[u]]]++;
+      cnt_added++;
     }
     for (auto id : adj_ids[u]) {
       auto &e = edges[id];
@@ -499,43 +536,51 @@ namespace graph {
     }
     reverse(ALL(cs));
     suff_tree::init(&cs);
+    cnt_added = 0;
     d_calc_pref(centroid, centroid, 0, 0, s_len);
-    suff_tree::calc_dp(0);
-    suff_tree::tour_init();
-//    suff_tree::dbg(0);
     if (t[centroid] < s[0]) {
       ans += n;
     }
-    d_calc_ans(centroid, centroid, 1);
-    usd[centroid] = 1;
-    if (suff_tree::tour_check(t[centroid])) {
-      for (auto id : adj_ids[centroid]) {
-        auto &e = edges[id];
-        if (usd[e.v]) continue;
-        int max_depth = d_find_depth(e.v, centroid, 1);
-        int ss_len = std::min((int)s.size(), (max_depth + 1) * 2) + 1;
-        sa::init();
-        sa::push(AL - 1);
-        std::string ccs("d");
-        ccs.reserve(ss_len);
-        for (int i = ss_len - 2; i >= 0; i--) {
-          sa::push(s[i] - 'a');
-          ccs.push_back(s[i]);
-        }
-        reverse(ALL(ccs));
-        suff_tree::init(&ccs);
-        d_calc_pref(e.v, centroid, t[centroid] - 'a' + 1, t[centroid] - 'a' + 1, ss_len);
-        suff_tree::calc_dp(0);
-        suff_tree::tour_init();
-        suff_tree::tour_go(t[centroid]);
-        for (char i = t[e.v] + 1; i < 'a' + AL - 1; i++) {
-          if (suff_tree::tour_check(i)) {
-            ans -= suff_tree::dp[suff_tree::tour_get(i)] * 1ll * e.sz_v;
+    if (cnt_added){
+      suff_tree::calc_dp(0);
+      suff_tree::tour_init();
+//    suff_tree::dbg(0);
+      d_calc_ans(centroid, centroid, 1);
+      usd[centroid] = 1;
+      if (suff_tree::tour_check(t[centroid]) && cnt_added) {
+        for (auto id : adj_ids[centroid]) {
+          auto &e = edges[id];
+          if (usd[e.v]) continue;
+          int max_depth = d_find_depth(e.v, centroid, 1);
+          int ss_len = std::min((int) s.size(), (max_depth + 1) * 2) + 1;
+          sa::init();
+          sa::push(AL - 1);
+          std::string ccs("d");
+          ccs.reserve(ss_len);
+          for (int i = ss_len - 2; i >= 0; i--) {
+            sa::push(s[i] - 'a');
+            ccs.push_back(s[i]);
+          }
+          reverse(ALL(ccs));
+          suff_tree::init(&ccs);
+          cnt_added = 0;
+          d_calc_pref(e.v, centroid, t[centroid] - 'a' + 1, t[centroid] - 'a' + 1, ss_len);
+
+          if (cnt_added) {
+            suff_tree::calc_dp(0);
+            suff_tree::tour_init();
+            suff_tree::tour_go(t[centroid]);
+            d_calc_ans(e.v, centroid, -1);
+            for (char i = t[e.v] + 1; i < 'a' + AL - 1; i++) {
+              if (suff_tree::tour_check(i)) {
+                ans -= suff_tree::dp[suff_tree::tour_get(i)] * 1ll * e.sz_v;
+              }
+            }
           }
         }
-        d_calc_ans(e.v, centroid, -1);
       }
     }
+    usd[centroid] = 1;
     for (auto id : adj_ids[centroid]) {
       auto &e = edges[id];
       if (!usd[e.v]) {

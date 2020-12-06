@@ -4,5 +4,6 @@ project(cp_prog)
 set(CMAKE_CXX_STANDARD 17)
 
 
-add_executable(cp_prog zaoch/DFull.cpp)
+add_executable(cp_prog codeforces/global12/F.cpp)
 add_compile_definitions(LOCAL)
+add_compile_definitions(KEK)
